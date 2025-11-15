@@ -1,6 +1,7 @@
 # Omarchy-Supplement
 
-The purpose of this repo is to hold my personal preferences for customising Omarchy to the way I like it.
+### Purpose:
+The purpose of this repo is to hold my personal preferences for customising Omarchy to the way I like it. These will be applied to the base install of Omarchy
 
 ### Key Justifications:
 * I'm not a developer, so some of Omarchy's default applications I don't use day to day
@@ -10,5 +11,14 @@ The purpose of this repo is to hold my personal preferences for customising Omar
   * Tweaking some keybindings
   * Tweaking some configs
 
+### References:
+
+* The great work DHH and the team have done on [Omarchy](https://omarchy.org) (repo here: [github](https://github.com/basecamp/omarchy))
+* This config is based on [typecraft's](https://typecraft.dev/) own custonisations (repo here:[github](https://github.com/typecraft-dev/omarchy-supplement))
+
+---  
+
 ### Disclaimer:
-This is a work in progress, that I'm working on gradually and learning git and new linux tools 
+This is a work in progress, that I'm working on gradually while learning git and other linux tools.  
+
+---  
