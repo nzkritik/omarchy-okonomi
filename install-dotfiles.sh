@@ -56,11 +56,11 @@ if [ $? -eq 0 ]; then
     rm -f "$OMARCHY_DIR/logo.txt"
     
     # Copy replacements from dotfiles folder
-    echo "Copying replacement files from dotfiles"
-    cp -f "$REPO_NAME/icon.png" "$OMARCHY_DIR/"
-    cp -f "$REPO_NAME/icon.txt" "$OMARCHY_DIR/"
-    cp -f "$REPO_NAME/logo.svg" "$OMARCHY_DIR/"
-    cp -f "$REPO_NAME/logo.txt" "$OMARCHY_DIR/"
+    echo "Copying replacement files from dotfiles" 
+    cp -f "icon.png" "$OMARCHY_DIR"
+    cp -f "icon.txt" "$OMARCHY_DIR"
+    cp -f "logo.svg" "$OMARCHY_DIR"
+    cp -f "logo.txt" "$OMARCHY_DIR"
   else
     echo "Omarchy directory not found at $OMARCHY_DIR"
   fi
