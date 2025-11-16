@@ -11,6 +11,18 @@ The purpose of this repo is to hold my personal preferences for customising Omar
   * Tweaking some keybindings
   * Tweaking some configs
 
+### Instructions:
+* Install omarchy
+* Do a system update (using the built-in update omarchy)
+* Clone this repo  
+```git clone https://github.com/nzkritik/omarchy-supplement.git```   
+```cd omarchy-supplement```   
+* (Optional) Review the files and make changes to suit your needs
+* Run the install script   
+```./install-all.sh```  
+* Reboot your system and enjoy
+
+
 ### References:
 
 * The great work DHH and the team have done on [Omarchy](https://omarchy.org) (repo here: [github](https://github.com/basecamp/omarchy))
