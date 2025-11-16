@@ -30,8 +30,41 @@ if [ $? -eq 0 ]; then
   cd "$REPO_NAME"
   stow tmux
   stow starship
+  
+  # Check and modify omarchy-launch-screensaver if it exists
+  SCREENSAVER_SCRIPT="$HOME/.local/share/omarchy/bin/omarchy-launch-screensaver"
+  if [ -f "$SCREENSAVER_SCRIPT" ]; then
+    echo "Found omarchy-launch-screensaver script. Modifying..."
+    # Backup the original file
+    cp "$SCREENSAVER_SCRIPT" "$SCREENSAVER_SCRIPT.bak"
+    
+    # Replace the line starting with "-e omarchy-cmd-screensaver" with the new command
+    sed -i '/^-e omarchy-cmd-screensaver/c\    -e neo-matrix -async --shadingmode=1 --defaultbg --colormode=16' "$SCREENSAVER_SCRIPT"
+    
+    echo "Successfully updated omarchy-launch-screensaver script"
+  else
+    echo "omarchy-launch-screensaver script not found at $SCREENSAVER_SCRIPT"
+  fi
+  
+  # Remove specified files from ~/.local/share/omarchy/
+  OMARCHY_DIR="$HOME/.local/share/omarchy"
+  if [ -d "$OMARCHY_DIR" ]; then
+    echo "Removing specified files from $OMARCHY_DIR"
+    rm -f "$OMARCHY_DIR/icon.png"
+    rm -f "$OMARCHY_DIR/icon.txt"
+    rm -f "$OMARCHY_DIR/logo.svg"
+    rm -f "$OMARCHY_DIR/logo.txt"
+    
+    # Copy replacements from dotfiles folder
+    echo "Copying replacement files from dotfiles"
+    cp -f "$REPO_NAME/icon.png" "$OMARCHY_DIR/"
+    cp -f "$REPO_NAME/icon.txt" "$OMARCHY_DIR/"
+    cp -f "$REPO_NAME/logo.svg" "$OMARCHY_DIR/"
+    cp -f "$REPO_NAME/logo.txt" "$OMARCHY_DIR/"
+  else
+    echo "Omarchy directory not found at $OMARCHY_DIR"
+  fi
 else
   echo "Failed to clone the repository."
   exit 1
 fi
-

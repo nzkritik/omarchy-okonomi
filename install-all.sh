@@ -4,6 +4,7 @@
 ./remove-apps.sh
 ./install-tmux.sh
 ./install-stow.sh
+./install-neo-matrix.sh
 ./install-dotfiles.sh
 ./install-hyprland-overrides.sh
 ./install-bitwarden.sh
