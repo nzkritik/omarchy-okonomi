@@ -5,7 +5,7 @@ The purpose of this repo is to hold my personal preferences for customising Omar
 
 ### Key Justifications:
 * I'm not a developer, so some of Omarchy's default applications I don't use day to day
-* I like the idea of installing a setup Arch system, but want my default applied post-install
+* I like the idea of installing a setup Arch system, but want my defaults applied post-install
   * Removing Apps i don't use
   * Adding apps I do use
   * Tweaking some keybindings
