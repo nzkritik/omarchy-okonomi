@@ -22,6 +22,8 @@ if ! is_tmux_installed; then
   ./install-tmux.sh
 fi
 
+cd ~
+
 # Check if the repository already exists
 if [ -d "$REPO_NAME" ]; then
   echo "Repository '$REPO_NAME' already exists. Skipping clone"
