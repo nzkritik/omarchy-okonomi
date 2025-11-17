@@ -8,12 +8,19 @@ is_stow_installed() {
   pacman -Qi "stow" &> /dev/null
 }
 
+is_tmux_installed() {
+  command -v tmux &> /dev/null
+}
+
 if ! is_stow_installed; then
-  echo "Install stow first"
-  exit 1
+  echo "stow not found. Installing..."
+  ./install-stow.sh
 fi
 
-cd ~
+if ! is_tmux_installed; then
+  echo "tmux not found. Installing..."
+  ./install-tmux.sh
+fi
 
 # Check if the repository already exists
 if [ -d "$REPO_NAME" ]; then
@@ -31,20 +38,6 @@ if [ $? -eq 0 ]; then
   stow tmux
   stow starship
   
-  # Check and modify omarchy-launch-screensaver if it exists
-  SCREENSAVER_SCRIPT="$HOME/.local/share/omarchy/bin/omarchy-launch-screensaver"
-  if [ -f "$SCREENSAVER_SCRIPT" ]; then
-    echo "Found omarchy-launch-screensaver script. Modifying..."
-    # Backup the original file
-    cp "$SCREENSAVER_SCRIPT" "$SCREENSAVER_SCRIPT.bak"
-    
-    # Replace the line starting with "-e omarchy-cmd-screensaver" with the new command
-    sed -i '/^-e omarchy-cmd-screensaver/c\    -e neo-matrix -async --shadingmode=1 --defaultbg --colormode=16' "$SCREENSAVER_SCRIPT"
-    
-    echo "Successfully updated omarchy-launch-screensaver script"
-  else
-    echo "omarchy-launch-screensaver script not found at $SCREENSAVER_SCRIPT"
-  fi
   
   # Remove specified files from ~/.local/share/omarchy/
   OMARCHY_DIR="$HOME/.local/share/omarchy"

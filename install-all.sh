@@ -11,4 +11,5 @@
 ./install-firefox.sh
 ./install-vscode.sh
 ./install-tixati.sh
+./install-zen-browser.sh
 
