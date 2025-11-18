@@ -79,18 +79,6 @@ show_dialog_menu() {
 # Function to ask about alternative screensavers
 ask_screensavers() {
     # Ask if user wants to install alternative screensavers
-    info="Select a screensaver to install:
-
-    neo-matrix
-    This screensaver displays falling characters similar to 
-    the Matrix movie effect.
-
-    sysc-walls
-    This screensaver runs as a systemd service and supports 
-    multi-monitor setups.
-
-    Note: 
-    sysc-walls will also install Go and the Kitty terminal."
     choice=$(dialog --clear \
         --yesno "Do you want to install alternative screensavers?" \
         10 60 \
@@ -99,28 +87,35 @@ ask_screensavers() {
     if [[ $? -eq 0 ]]; then
         # Show dialog with screensaver options
         screensaver_choice=$(dialog --clear \
-            --radiolist "$info" \
+            --radiolist "Select a screensaver to install:
+
+neo-matrix
+This screensaver displays falling characters similar to 
+the Matrix movie effect.
+
+sysc-walls
+This screensaver runs as a systemd service and supports 
+multi-monitor setups.
+
+Note: 
+sysc-walls will also install Go and the Kitty terminal." \
             20 70 4 \
             1 "neo-matrix" "on" \
             2 "sysc-walls" "off" \
             2>&1 >/dev/tty)
         
         if [[ $? -eq 0 && -n "$screensaver_choice" ]]; then
-            # Process selected screensavers
-            IFS=' ' read -ra selected_screensavers <<< "$screensaver_choice"
-            
-            for screensaver in "${selected_screensavers[@]}"; do
-                case "$screensaver" in
-                    "neo-matrix")
-                        echo "Installing neo-matrix screensaver..."
-                        ./install-neo-matrix.sh
-                        ;;
-                    "sysc-walls")
-                        echo "Installing sysc-walls screensaver..."
-                        ./install-sysc-walls.sh
-                        ;;
-                esac
-            done
+            # Process selected screensaver
+            case "$screensaver_choice" in
+                1)
+                    echo "Installing neo-matrix screensaver..."
+                    ./install-neo-matrix.sh
+                    ;;
+                2)
+                    echo "Installing sysc-walls screensaver..."
+                    ./install-sysc-walls.sh
+                    ;;
+            esac
         fi
     fi
 }
