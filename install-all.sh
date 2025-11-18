@@ -1,4 +1,6 @@
 #!/bin/bash
+theme="$PWD/.dialogrc"
+export DIALOGRC="$theme"
 
 # Function to display menu using dialog
 show_dialog_menu() {
@@ -77,6 +79,18 @@ show_dialog_menu() {
 # Function to ask about alternative screensavers
 ask_screensavers() {
     # Ask if user wants to install alternative screensavers
+    info="Select a screensaver to install:
+
+    neo-matrix
+    This screensaver displays falling characters similar to 
+    the Matrix movie effect.
+
+    sysc-walls
+    This screensaver runs as a systemd service and supports 
+    multi-monitor setups.
+
+    Note: 
+    sysc-walls will also install Go and the Kitty terminal."
     choice=$(dialog --clear \
         --yesno "Do you want to install alternative screensavers?" \
         10 60 \
@@ -85,10 +99,10 @@ ask_screensavers() {
     if [[ $? -eq 0 ]]; then
         # Show dialog with screensaver options
         screensaver_choice=$(dialog --clear \
-            --checklist "Select a screensaver to install:" \
-            15 60 10 \
-            "neo-matrix" "Neo Matrix screensaver \nThis screensaver displays falling characters \nsimilar to the Matrix movie effect." "on" \
-            "sysc-walls" "Systemd walls screensaver \nThis screensaver runs as a systemd service \nand supports multi-monitor setups. \nNote: This will also install Go and Kitty terminal." "off" \
+            --radiolist "$info" \
+            20 70 4 \
+            1 "neo-matrix" "on" \
+            2 "sysc-walls" "off" \
             2>&1 >/dev/tty)
         
         if [[ $? -eq 0 && -n "$screensaver_choice" ]]; then

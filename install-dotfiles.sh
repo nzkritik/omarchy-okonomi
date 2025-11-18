@@ -55,10 +55,12 @@ if [ $? -eq 0 ]; then
   fi
   echo "removing old configs"
   rm -rf ~/.config/starship.toml
+  rm -rf ~/.config/fastfetch/fastfetch.conf
 
   cd "$REPO_NAME"
   stow starship
   stow fastfetch
+  
 else
   echo "Failed to clone the repository."
   exit 1
