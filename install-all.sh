@@ -73,6 +73,7 @@ show_dialog_menu() {
     echo "Installation complete!"
     rm -f "$TEMP_FILE"
 }
+
 # Function to ask about alternative screensavers
 ask_screensavers() {
     # Ask if user wants to install alternative screensavers
@@ -84,10 +85,10 @@ ask_screensavers() {
     if [[ $? -eq 0 ]]; then
         # Show dialog with screensaver options
         screensaver_choice=$(dialog --clear \
-            --checklist "Select screensavers to install:" \
+            --checklist "Select a screensaver to install:" \
             15 60 10 \
-            "neo-matrix" "Neo Matrix screensaver (installs cmatrix)" "on" \
-            "sysc-walls" "Systemd walls screensaver (installs feh)" "on" \
+            "neo-matrix" "Neo Matrix screensaver \nThis screensaver displays falling characters \nsimilar to the Matrix movie effect." "on" \
+            "sysc-walls" "Systemd walls screensaver \nThis screensaver runs as a systemd service \nand supports multi-monitor setups. \nNote: This will also install Go and Kitty terminal." "off" \
             2>&1 >/dev/tty)
         
         if [[ $? -eq 0 && -n "$screensaver_choice" ]]; then
@@ -109,6 +110,7 @@ ask_screensavers() {
         fi
     fi
 }
+
 # Check if dialog is available
 if ! command -v dialog &> /dev/null; then
     echo "Dialog tool not found. Installing dialog..."
