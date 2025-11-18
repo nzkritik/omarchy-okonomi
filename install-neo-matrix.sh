@@ -1,5 +1,9 @@
 #!/bin/bash
 
+ORIGINAL_DIR=$(pwd)
+REPO_URL="https://github.com/nzkritik/dotfiles"
+REPO_NAME="dotfiles"
+
 # Install neo-matrix
 yay -S --noconfirm --needed neo-matrix
 
@@ -14,18 +18,24 @@ if command -v neo-matrix &> /dev/null; then
         # Check and modify omarchy-launch-screensaver if it exists
         SCREENSAVER_SCRIPT="$HOME/.local/share/omarchy/bin/omarchy-launch-screensaver"
         if [ -f "$SCREENSAVER_SCRIPT" ]; then
-            echo "Found omarchy-launch-screensaver script. Modifying..."
+            echo "Found omarchy-launch-screensaver script. Backing up..."
             # Backup the original file
             cp "$SCREENSAVER_SCRIPT" "$SCREENSAVER_SCRIPT.bak"
-            
-            # Replace the line starting with "-e omarchy-cmd-screensaver" with the new command
-            # Using a more robust approach to replace the line
-            if grep -q "omarchy-cmd-screensaver" "$SCREENSAVER_SCRIPT"; then
-                sed -i '/^-e omarchy-cmd-screensaver/c\    -e neo-matrix -async --shadingmode=1 --defaultbg --colormode=16' "$SCREENSAVER_SCRIPT"
-                echo "Successfully updated omarchy-launch-screensaver script"
+            cd ~
+            # Check if the repository already exists
+            if [ -d "$REPO_NAME" ]; then
+            echo "Repository '$REPO_NAME' already exists. Skipping clone"
             else
-                echo "Warning: Could not find omarchy-cmd-screensaver pattern in script"
-                echo "The script may need manual editing"
+            git clone "$REPO_URL"
+            fi
+            NEW_SCRIPT="$REPO_NAME/omarchy/omarchy-launch-screensaver"
+            
+            # Replace the original omarchy-cmd-screensaver with the new version with neo-matrix
+            if [ -f "$NEW_SCRIPT" ]; then
+                cp  "$NEW_SCRIPT" "$SCREENSAVER_SCRIPT"
+                echo "Successfully updated omarchy-launch-screensaver"
+            else
+                echo "omarchy-launch-screensaver not updated"
             fi
         else
             echo "omarchy-launch-screensaver script not found at $SCREENSAVER_SCRIPT"
