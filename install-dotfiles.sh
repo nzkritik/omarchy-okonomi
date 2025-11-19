@@ -49,17 +49,18 @@ if [ $? -eq 0 ]; then
   fi
 
   if is_tmux_installed; then
+
     cd "$REPO_NAME"
     stow tmux
     cd "$ORIGINAL_DIR"
   fi
   echo "removing old configs"
   rm -rf ~/.config/starship.toml
-  rm -rf ~/.config/fastfetch/fastfetch.conf
+  rm -rf ~/.config/fastfetch/config.jsonc
 
   cd "$REPO_NAME"
   stow starship
-  cp -f ./fastfetch/.config/fastfetch.conf ~/.config/fastfetch/fastfetch.conf
+  cp -f ./fastfetch/.config/fastfetch/config.jsonc ~/.config/fastfetch/
 else
   echo "Failed to clone the repository."
   exit 1
