@@ -24,7 +24,7 @@ show_gum_menu() {
     done
 
     # Run gum choose (allow multiple selections)
-    selected=$(gum choose --no-limit --height=14 --prompt="Select software to install (default all except Firefox):" \
+    selected=$(gum choose --no-limit --height=14 --header="Select software to install (default all except Firefox):" \
         "${selected_flags[@]}" "${install_scripts[@]}")
 
     # user cancelled or no selection
@@ -50,7 +50,7 @@ show_gum_menu() {
 
 # Function to ask about alternative screensavers using gum
 ask_screensavers_with_info() {
-    if gum confirm --default-true --prompt="Do you want to install alternative screensavers?"; then
+    if gum confirm --default-true --header="Do you want to install alternative screensavers?"; then
         # Show multi-line information about options, then prompt selection
         cat <<'INFO'
 
@@ -69,7 +69,7 @@ sysc-walls
 INFO
 
         # Let user pick one (single choice). Use gum choose with limit 1.
-        choice=$(gum choose --limit 1 --height=6 --prompt="Select a screensaver to install:" \
+        choice=$(gum choose --limit 1 --height=6 --header="Select a screensaver to install:" \
             "neo-matrix" "sysc-walls")
 
         if [[ -n "${choice:-}" ]]; then

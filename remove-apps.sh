@@ -28,7 +28,7 @@ if ! command -v gum &>/dev/null; then
 fi
 
 # Select regular apps to remove
-selected_apps=$(gum choose --no-limit --height=10 --prompt "Select applications to remove (space to toggle, Enter to confirm):" \
+selected_apps=$(gum choose --no-limit --height=10 --header "Select applications to remove (space to toggle, Enter to confirm):" \
   "${apps_to_remove[@]}") || true
 
 if [[ -n "${selected_apps:-}" ]]; then
@@ -54,7 +54,7 @@ else
 fi
 
 # Select web apps to remove
-selected_web_apps=$(gum choose --no-limit --height=8 --prompt "Select web applications to remove (space to toggle, Enter to confirm):" \
+selected_web_apps=$(gum choose --no-limit --height=8 --header "Select web applications to remove (space to toggle, Enter to confirm):" \
   "${web_apps_to_remove[@]}") || true
 
 if [[ -n "${selected_web_apps:-}" ]]; then
