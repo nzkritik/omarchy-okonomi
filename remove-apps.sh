@@ -35,7 +35,7 @@ if [[ -n "${selected_apps:-}" ]]; then
   echo "You selected the following applications for removal:"
   printf '  %s\n' $selected_apps
 
-  if gum confirm --default-true "Proceed to remove the selected applications?"; then
+  if gum confirm "Proceed to remove the selected applications?" --default; then
     # mapfile to get newline-separated selections into array
     mapfile -t sel_apps_array <<<"$selected_apps"
     for app in "${sel_apps_array[@]}"; do
@@ -61,7 +61,7 @@ if [[ -n "${selected_web_apps:-}" ]]; then
   echo "You selected the following web apps for removal:"
   printf '  %s\n' $selected_web_apps
 
-  if gum confirm --default-true "Proceed to remove the selected web apps (desktop entries and icons)?"; then
+  if gum confirm "Proceed to remove the selected web apps (desktop entries and icons)?" --default; then
     mapfile -t sel_web_array <<<"$selected_web_apps"
     for web in "${sel_web_array[@]}"; do
       echo "Removing desktop entry and icon for $web..."

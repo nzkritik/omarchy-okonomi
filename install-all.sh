@@ -24,7 +24,7 @@ show_gum_menu() {
     done
 
     # Run gum choose (allow multiple selections)
-    selected=$(gum choose --no-limit --height=14 --header="Select software to install (Use Tab to select/deselect):" \
+    selected=$(gum choose --no-limit --height=14 --header="Select software to install (space to toggle, Enter to confirm):" \
         "${selected_flags[@]}" "${install_scripts[@]}")
 
     # user cancelled or no selection
@@ -107,6 +107,7 @@ fi
 
 # Run main flow
 show_gum_menu
+clear
 ask_screensavers_with_info
 
 # follow-up tasks
