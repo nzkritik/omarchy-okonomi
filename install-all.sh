@@ -24,7 +24,7 @@ show_gum_menu() {
     done
 
     # Run gum choose (allow multiple selections)
-    selected=$(gum choose --no-limit --height=14 --header="Select software to install (default all except Firefox):" \
+    selected=$(gum choose --no-limit --height=14 --header="Select software to install (Use Tab to select/deselect):" \
         "${selected_flags[@]}" "${install_scripts[@]}")
 
     # user cancelled or no selection
@@ -50,7 +50,7 @@ show_gum_menu() {
 
 # Function to ask about alternative screensavers using gum
 ask_screensavers_with_info() {
-    if gum confirm --default --header="Do you want to install alternative screensavers?"; then
+    if gum confirm --default --prompt="Do you want to install alternative screensavers?"; then
         # Show multi-line information about options, then prompt selection
         cat <<'INFO'
 
