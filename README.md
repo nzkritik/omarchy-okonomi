@@ -23,7 +23,7 @@ The purpose of this repo is to hold my personal preferences for customising Omar
 * Reboot your system and enjoy
 
 ### ToDo list:
-[ ] configure install script to provide more flexible options for installs  
+[*] configure install script to provide more flexible options for installs  
 [ ] Add more software and categories for simple navigation  
 [ ] Do better testing to ensure installation doesn't break
 

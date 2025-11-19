@@ -1,121 +1,78 @@
 #!/bin/bash
+set -euo pipefail
 
 ICON_DIR="$HOME/.local/share/applications/icons"
 DESKTOP_DIR="$HOME/.local/share/applications/"
 
-# List of applications to be removed
 apps_to_remove=(
-    "1password-beta"
-    "1password-cli"
-    "xournalpp"
-    "signal-desktop"
-    "typora"
+  "1password-beta"
+  "1password-cli"
+  "xournalpp"
+  "signal-desktop"
+  "typora"
 )
 
-# List of web apps to be removed
 web_apps_to_remove=(
-    "Basecamp"
-    "Figma"
-    "HEY"
+  "Basecamp"
+  "Figma"
+  "HEY"
 )
 
-# Function to show dialog checklist for apps
-show_app_checklist() {
-    local app_options=()
-    
-    # Build dialog options for regular apps
-    for i in "${!apps_to_remove[@]}"; do
-        app_options+=("$((i+1))" "${apps_to_remove[$i]}" "on")
-    done
-    
-    # Show dialog checklist for regular apps
-    selected_apps=$(dialog --clear \
-        --checklist "Select applications to remove:" \
-        20 60 10 \
-        "${app_options[@]}" \
-        2>&1 >/dev/tty)
-    
-    # Check if user cancelled
-    if [[ $? -ne 0 ]]; then
-        echo "Removal cancelled."
-        exit 0
-    fi
-    
-    # Process selected apps
-    if [[ -z "$selected_apps" ]]; then
-        echo "No applications selected for removal."
-        exit 0
-    fi
-    
-    # Convert selected options to array
-    IFS=' ' read -ra selected_nums <<< "$selected_apps"
-    
-    # Remove selected apps
-    for num in "${selected_nums[@]}"; do
-        index=$((num-1))
-        if [[ $index -ge 0 && $index -lt ${#apps_to_remove[@]} ]]; then
-            echo "Removing ${apps_to_remove[$index]}..."
-            yay -R --noconfirm "${apps_to_remove[$index]}"
-        fi
-    done
-}
-
-# Function to show dialog checklist for web apps
-show_web_app_checklist() {
-    local web_app_options=()
-    
-    # Build dialog options for web apps
-    for i in "${!web_apps_to_remove[@]}"; do
-        web_app_options+=("$((i+1))" "${web_apps_to_remove[$i]}" "on")
-    done
-    
-    # Show dialog checklist for web apps
-    selected_web_apps=$(dialog --clear \
-        --checklist "Select web applications to remove:" \
-        20 60 10 \
-        "${web_app_options[@]}" \
-        2>&1 >/dev/tty)
-    
-    # Check if user cancelled
-    if [[ $? -ne 0 ]]; then
-        echo "Removal cancelled."
-        exit 0
-    fi
-    
-    # Process selected web apps
-    if [[ -z "$selected_web_apps" ]]; then
-        echo "No web applications selected for removal."
-        exit 0
-    fi
-    
-    # Convert selected options to array
-    IFS=' ' read -ra selected_nums <<< "$selected_web_apps"
-    
-    # Remove selected web apps
-    for num in "${selected_nums[@]}"; do
-        index=$((num-1))
-        if [[ $index -ge 0 && $index -lt ${#web_apps_to_remove[@]} ]]; then
-            echo "Removing ${web_apps_to_remove[$index]}..."
-            rm -f "$DESKTOP_DIR/${web_apps_to_remove[$index]}.desktop"
-            rm -f "$ICON_DIR/${web_apps_to_remove[$index]}.png"
-        fi
-    done
-}
-
-# Check if dialog is available
-if ! command -v dialog &> /dev/null; then
-    echo "Dialog tool not found. Installing dialog..."
-    sudo pacman -S --noconfirm dialog --needed
-    if [[ $? -ne 0 ]]; then
-        echo "Failed to install dialog. Exiting."
-        exit 1
-    fi
+# Ensure gum is available (install on Arch if missing)
+if ! command -v gum &>/dev/null; then
+  echo "gum not found. Installing gum..."
+  sudo pacman -S --noconfirm --needed gum || {
+    echo "Failed to install gum. Please install it manually and re-run this script."
+    exit 1
+  }
 fi
 
-# Show app checklist
-show_app_checklist
+# Select regular apps to remove
+selected_apps=$(gum choose --no-limit --height=10 --prompt "Select applications to remove (space to toggle, Enter to confirm):" \
+  "${apps_to_remove[@]}") || true
 
-# Show web app checklist
-show_web_app_checklist
+if [[ -n "${selected_apps:-}" ]]; then
+  echo "You selected the following applications for removal:"
+  printf '  %s\n' $selected_apps
 
-echo "Removal complete!"
+  if gum confirm --default-true "Proceed to remove the selected applications?"; then
+    # mapfile to get newline-separated selections into array
+    mapfile -t sel_apps_array <<<"$selected_apps"
+    for app in "${sel_apps_array[@]}"; do
+      echo "Removing $app..."
+      if yay -R --noconfirm "$app" &>/dev/null; then
+        echo "Removed $app"
+      else
+        echo "Warning: Could not remove $app (may not be installed or removal failed)"
+      fi
+    done
+  else
+    echo "Skipped removing applications."
+  fi
+else
+  echo "No applications selected for removal."
+fi
+
+# Select web apps to remove
+selected_web_apps=$(gum choose --no-limit --height=8 --prompt "Select web applications to remove (space to toggle, Enter to confirm):" \
+  "${web_apps_to_remove[@]}") || true
+
+if [[ -n "${selected_web_apps:-}" ]]; then
+  echo "You selected the following web apps for removal:"
+  printf '  %s\n' $selected_web_apps
+
+  if gum confirm --default-true "Proceed to remove the selected web apps (desktop entries and icons)?"; then
+    mapfile -t sel_web_array <<<"$selected_web_apps"
+    for web in "${sel_web_array[@]}"; do
+      echo "Removing desktop entry and icon for $web..."
+      rm -f "$DESKTOP_DIR/${web}.desktop" "$ICON_DIR/${web}.png"
+      echo "Removed files for $web (if present)."
+    done
+  else
+    echo "Skipped removing web apps."
+  fi
+else
+  echo "No web applications selected for removal."
+fi
+
+echo "Removal operations complete."

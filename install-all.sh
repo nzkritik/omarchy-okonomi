@@ -1,13 +1,9 @@
 #!/bin/bash
-theme="$PWD/.dialogrc"
-export DIALOGRC="$theme"
 
-# Function to display menu using dialog
-show_dialog_menu() {
-    # Create temporary file for dialog options
-    TEMP_FILE=$(mktemp)
-    
-    # Create array of install scripts (excluding the specified ones)
+set -euo pipefail
+
+# Function to display menu using gum
+show_gum_menu() {
     install_scripts=(
         "install-tmux.sh"
         "install-stow.sh"
@@ -18,120 +14,110 @@ show_dialog_menu() {
         "install-tixati.sh"
         "install-zen-browser.sh"
     )
-    
-    # Build dialog checklist options
-    dialog_options=()
-    for i in "${!install_scripts[@]}"; do
-        # Default all selections to true except Firefox
-        if [[ "${install_scripts[$i]}" == "install-firefox.sh" ]]; then
-            dialog_options+=("$((i+1))" "${install_scripts[$i]}" "off")
-        else
-            dialog_options+=("$((i+1))" "${install_scripts[$i]}" "on")
+
+    # Build selected flags (default all selected except firefox)
+    selected_flags=()
+    for s in "${install_scripts[@]}"; do
+        if [[ "$s" != "install-firefox.sh" ]]; then
+            selected_flags+=(--selected "$s")
         fi
     done
-    
-    # Show dialog checklist
-    selected_options=$(dialog --clear \
-        --checklist "Select software to install (default all except Firefox):" \
-        20 70 10 \
-        "${dialog_options[@]}" \
-        2>&1 >/dev/tty)
-    
-    # Check if user cancelled
-    if [[ $? -ne 0 ]]; then
-        echo "Installation cancelled by user."
-        rm -f "$TEMP_FILE"
+
+    # Run gum choose (allow multiple selections)
+    selected=$(gum choose --no-limit --height=14 --prompt="Select software to install (default all except Firefox):" \
+        "${selected_flags[@]}" "${install_scripts[@]}")
+
+    # user cancelled or no selection
+    if [[ -z "${selected:-}" ]]; then
+        echo "Installation cancelled or no selection made."
         exit 0
     fi
-    
-    # Process selected options
-    if [[ -z "$selected_options" ]]; then
-        echo "No software selected."
-        rm -f "$TEMP_FILE"
-        exit 0
-    fi
-    
-    # Execute selected scripts
-    echo ""
+
+    # selected is newline-separated; iterate and run scripts
+    IFS=$'\n' read -r -d '' -a selected_array <<< "${selected}" || true
+    echo
     echo "Installing selected software..."
-    echo "================================"
-    
-    # Convert selected options to array
-    IFS=' ' read -ra selected_nums <<< "$selected_options"
-    
-    for num in "${selected_nums[@]}"; do
-        # Convert 1-based to 0-based index
-        index=$((num-1))
-        if [[ $index -ge 0 && $index -lt ${#install_scripts[@]} ]]; then
-            echo "Installing ${install_scripts[$index]}..."
-            "./${install_scripts[$index]}"
-            if [[ $? -ne 0 ]]; then
-                echo "Error installing ${install_scripts[$index]}"
-            fi
+    for item in "${selected_array[@]}"; do
+        echo "-> $item"
+        if [[ -x "./$item" ]]; then
+            "./$item"
+        else
+            echo "Warning: $item not executable or not found in current directory."
         fi
     done
-    
-    echo ""
-    echo "Installation complete!"
-    rm -f "$TEMP_FILE"
+    echo "All selected installs attempted."
 }
 
-# Function to ask about alternative screensavers
-ask_screensavers() {
-    # Ask if user wants to install alternative screensavers
-    choice=$(dialog --clear \
-        --yesno "Do you want to install alternative screensavers?" \
-        10 60 \
-        2>&1 >/dev/tty)
-    
-    if [[ $? -eq 0 ]]; then
-        # Show dialog with screensaver options
-        screensaver_choice=$(dialog --clear \
-            --radiolist "Select a screensaver to install:
+# Function to ask about alternative screensavers using gum
+ask_screensavers_with_info() {
+    if gum confirm --default-true --prompt="Do you want to install alternative screensavers?"; then
+        # Show multi-line information about options, then prompt selection
+        cat <<'INFO'
+
+Available screensaver options:
 
 neo-matrix
-This screensaver displays falling characters similar to 
-the Matrix movie effect.
+  - Matrix-style falling characters effect.
+  - Installs neo-matrix (AUR) and related packages.
+  - Recommended if you want a terminal-style animated screensaver.
 
 sysc-walls
-This screensaver runs as a systemd service and supports 
-multi-monitor setups.
+  - Slideshow-based screensaver using feh.
+  - Installs feh and configures a systemd service for multi-monitor slideshows.
+  - Recommended if you prefer image-based screensavers.
 
-Note: 
-sysc-walls will also install Go and the Kitty terminal." \
-            20 70 4 \
-            1 "neo-matrix" "on" \
-            2 "sysc-walls" "off" \
-            2>&1 >/dev/tty)
-        
-        if [[ $? -eq 0 && -n "$screensaver_choice" ]]; then
-            # Process selected screensaver
-            case "$screensaver_choice" in
-                1)
-                    echo "Installing neo-matrix screensaver..."
-                    ./install-neo-matrix.sh
+INFO
+
+        # Let user pick one (single choice). Use gum choose with limit 1.
+        choice=$(gum choose --limit 1 --height=6 --prompt="Select a screensaver to install:" \
+            "neo-matrix" "sysc-walls")
+
+        if [[ -n "${choice:-}" ]]; then
+            case "$choice" in
+                neo-matrix)
+                    echo "Installing neo-matrix..."
+                    if [[ -x "./install-neo-matrix.sh" ]]; then
+                        ./install-neo-matrix.sh
+                    else
+                        echo "install-neo-matrix.sh not found or not executable."
+                    fi
                     ;;
-                2)
-                    echo "Installing sysc-walls screensaver..."
-                    ./install-sysc-walls.sh
+                sysc-walls)
+                    echo "Installing sysc-walls..."
+                    if [[ -x "./install-sysc-walls.sh" ]]; then
+                        ./install-sysc-walls.sh
+                    else
+                        echo "install-sysc-walls.sh not found or not executable."
+                    fi
                     ;;
             esac
+        else
+            echo "No screensaver selected."
         fi
+    else
+        echo "Skipping alternative screensavers."
     fi
 }
 
-# Check if dialog is available
-if ! command -v dialog &> /dev/null; then
-    echo "Dialog tool not found. Installing dialog..."
-    sudo pacman -S --noconfirm dialog --needed
-    if [[ $? -ne 0 ]]; then
-        echo "Failed to install dialog. Exiting."
-        exit 1
-    fi
+# Ensure gum is installed
+if ! command -v gum &>/dev/null; then
+    echo "gum not found. Install gum first: https://github.com/charmbracelet/gum"
+    exit 1
 fi
 
-# Run the dialog menu
-show_dialog_menu
-ask_screensavers
-./install-dotfiles.sh
-./remove-apps.sh
+# Run main flow
+show_gum_menu
+ask_screensavers_with_info
+
+# follow-up tasks
+if [[ -x "./install-dotfiles.sh" ]]; then
+    ./install-dotfiles.sh
+else
+    echo "install-dotfiles.sh not found or not executable; skipping."
+fi
+
+if [[ -x "./remove-apps.sh" ]]; then
+    ./remove-apps.sh
+else
+    echo "remove-apps.sh not found or not executable; skipping."
+fi
