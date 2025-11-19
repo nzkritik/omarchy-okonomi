@@ -50,7 +50,7 @@ show_gum_menu() {
 
 # Function to ask about alternative screensavers using gum
 ask_screensavers_with_info() {
-    if gum confirm --default --prompt="Do you want to install alternative screensavers?"; then
+    if gum confirm --default "Do you want to install alternative screensavers?"; then
         # Show multi-line information about options, then prompt selection
         cat <<'INFO'
 
