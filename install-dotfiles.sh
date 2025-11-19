@@ -49,7 +49,7 @@ if [ $? -eq 0 ]; then
   fi
 
   if is_tmux_installed; then
-
+    cd ~
     cd "$REPO_NAME"
     stow tmux
     cd "$ORIGINAL_DIR"
@@ -57,7 +57,7 @@ if [ $? -eq 0 ]; then
   echo "removing old configs"
   rm -rf ~/.config/starship.toml
   rm -rf ~/.config/fastfetch/config.jsonc
-
+  cd ~
   cd "$REPO_NAME"
   stow starship
   cp -f ./fastfetch/.config/fastfetch/config.jsonc ~/.config/fastfetch/
