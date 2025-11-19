@@ -59,8 +59,7 @@ if [ $? -eq 0 ]; then
 
   cd "$REPO_NAME"
   stow starship
-  stow fastfetch
-  
+  cp -f ./fastfetch/.config/fastfetch.conf ~/.config/fastfetch/fastfetch.conf
 else
   echo "Failed to clone the repository."
   exit 1
