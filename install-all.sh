@@ -88,7 +88,7 @@ INFO
 
         # Let user pick one (single choice)
         choice=$(gum choose --limit 1 --height=6 \
-            --prompt="Select a screensaver to install:" \
+            --header="Select a screensaver to install:" \
             "neo-matrix" "sysc-walls")
 
         if [[ -n "${choice:-}" ]]; then

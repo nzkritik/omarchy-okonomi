@@ -22,12 +22,15 @@ show_browser_menu() {
         "Opera|Feature-rich Chromium-based browser|./scripts/install-opera.sh|false"
     )
 
-    # Build display options
+    # Build display options and keep track of mapping
+    declare -A browser_map=()
     declare -a display_options=()
     
     for item in "${browsers[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
-        display_options+=("$name - $desc")
+        display_key="$name - $desc"
+        display_options+=("$display_key")
+        browser_map["$display_key"]="$name|$desc|$script"
     done
 
     # Show browser selection menu
@@ -52,21 +55,19 @@ show_browser_menu() {
     
     mapfile -t selected_array <<<"$selected"
     
-    for selected_name in "${selected_array[@]}"; do
-        # Find matching script for selected name
-        for item in "${browsers[@]}"; do
-            IFS='|' read -r name desc script _ <<< "$item"
-            if [[ "$name" == "$selected_name" ]]; then
-                gum spin --title "Installing $name..." -- sleep 0.5
-                if [[ -x "$script" ]]; then
-                    "$script"
-                    gum style --foreground 40 "✓ $name installed successfully"
-                else
-                    gum warn "$script not found or not executable"
-                fi
-                break
+    for selected_item in "${selected_array[@]}"; do
+        # Get the browser info from the map
+        if [[ -n "${browser_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${browser_map[$selected_item]}"
+            
+            gum spin --title "Installing $name..." -- sleep 0.5
+            if [[ -x "$script" ]]; then
+                "$script"
+                gum style --foreground 40 "✓ $name installed successfully"
+            else
+                gum warn "$script not found or not executable"
             fi
-        done
+        fi
     done
     
     echo ""

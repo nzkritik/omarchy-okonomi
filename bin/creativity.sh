@@ -15,8 +15,8 @@ fi
 show_creativity_menu() {
     # Define creativity array with: name, description, install script, selected (true/false)
     declare -a creativity=(
-        "DisplayCAL|COpen Source Display Calibration and Characterization|./scripts/install-displaycal.sh|false"
-        "Rapid Photo|Rapid Photo Downloader for photographers.|./scripts/install-rapid-photo.sh|false"
+        "DisplayCAL|Open Source Display Calibration and Characterization|./scripts/install-displaycal.sh|false"
+        "Rapid Photo|Rapid Photo Downloader for photographers|./scripts/install-rapid-photo.sh|false"
         "Digikam|An advanced digital photo management application|./scripts/install-digikam.sh|false"
         "Darktable|Utility to organize and develop raw images|./scripts/install-darktable.sh|false"
         "Filmulator|Filmulator is a raw photo editing application|./scripts/install-filmulator.sh|false"
@@ -31,12 +31,15 @@ show_creativity_menu() {
         "Upscayl|Free and Open Source AI Image Upscaler|./scripts/install-upscayl.sh|false"
     )
 
-    # Build display options
+    # Build display options and keep track of mapping
+    declare -A creativity_map=()
     declare -a display_options=()
     
     for item in "${creativity[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
-        display_options+=("$name - $desc")
+        display_key="$name - $desc"
+        display_options+=("$display_key")
+        creativity_map["$display_key"]="$name|$desc|$script"
     done
 
     # Show creativity App selection menu
@@ -45,7 +48,7 @@ show_creativity_menu() {
     gum style "Select creativity Apps to install (space to toggle, Enter to confirm):"
     echo ""
 
-    selected=$(gum choose --no-limit --height=10 \
+    selected=$(gum choose --no-limit --height=15 \
         "${display_options[@]}")
 
     # User cancelled or no selection
@@ -61,21 +64,19 @@ show_creativity_menu() {
     
     mapfile -t selected_array <<<"$selected"
     
-    for selected_name in "${selected_array[@]}"; do
-        # Find matching script for selected name
-        for item in "${creativity[@]}"; do
-            IFS='|' read -r name desc script _ <<< "$item"
-            if [[ "$name" == "$selected_name" ]]; then
-                gum spin --title "Installing $name..." -- sleep 0.5
-                if [[ -x "$script" ]]; then
-                    "$script"
-                    gum style --foreground 40 "✓ $name installed successfully"
-                else
-                    gum warn "$script not found or not executable"
-                fi
-                break
+    for selected_item in "${selected_array[@]}"; do
+        # Get the app info from the map
+        if [[ -n "${creativity_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${creativity_map[$selected_item]}"
+            
+            gum spin --title "Installing $name..." -- sleep 0.5
+            if [[ -x "$script" ]]; then
+                "$script"
+                gum style --foreground 40 "✓ $name installed successfully"
+            else
+                gum warn "$script not found or not executable"
             fi
-        done
+        fi
     done
     
     echo ""
