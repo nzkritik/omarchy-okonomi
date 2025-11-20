@@ -24,7 +24,7 @@ show_gum_menu() {
     
     for item in "${software[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
-        display_options+=("$name" "$desc")
+        display_options+=("$name - $desc")
         script_map+=("$script")
     done
 
