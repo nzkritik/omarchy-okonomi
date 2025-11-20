@@ -23,9 +23,19 @@ The purpose of this repo is to hold my personal preferences for customising Omar
 * Reboot your system and enjoy
 
 ### ToDo list:
-[*] configure install script to provide more flexible options for installs  
-[ ] Add more software and categories for simple navigation  
-[ ] Do better testing to ensure installation doesn't break
+[ ] configure install script to provide more flexible options for installs  
+  [X] organise the install scripts into categories and shift them to a sub-folder  
+    [X] Web Browsers  
+    [X] Creativity Apps  
+    [ ] Torrent Apps  
+    [ ] Development Apps  
+    [ ] File Management Apps  
+    [ ] System Tools/Utilities  
+    [ ] System Tweaks  
+  [X] provide options to install only certain categories of apps/configs  
+[ ] Structure the install flow to allow for minimal changes or very  tweaked installs
+[ ] Add more custom apps/configs as I find them  
+[ ] Do better testing to ensure installation doesn't break  
 
 ### References:
 

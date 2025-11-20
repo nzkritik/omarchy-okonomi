@@ -4,54 +4,72 @@ set -euo pipefail
 
 # Function to display menu using gum
 show_gum_menu() {
-    install_scripts=(
-        "install-tmux.sh"
-        "install-stow.sh"
-        "install-bitwarden.sh"
-        "install-firefox.sh"
-        "install-kvm.sh"
-        "install-vscode.sh"
-        "install-tixati.sh"
-        "install-zen-browser.sh"
+    # Define software array with: name, description, script, selected (true/false)
+    declare -a software=(
+        "Web Browsers|Various web browsers|./bin/browsers.sh|false"
+        "Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
+        "tmux|Terminal multiplexer|./bin/install-tmux.sh|false"
+        "stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
+        "neo-matrix|Matrix-style screensaver|./bin/install-neo-matrix.sh|false"
+        "Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
+        "KVM|Virtualization|./bin/install-kvm.sh|false"
+        "Sysc Walls|Wallpaper manager|./bin/install-sysc-walls.sh|false"
+        "VS Code|Code editor|./bin/install-vscode.sh|false"
+        "Tixati|Torrent client|./bin/install-tixati.sh|false"
     )
 
-    # Build selected flags (default all selected except firefox)
-    selected_flags=()
-    for s in "${install_scripts[@]}"; do
-        if [[ "$s" != "install-firefox.sh" ]]; then
-            selected_flags+=(--selected "$s")
-        fi
+    # Build display options and track scripts
+    declare -a display_options=()
+    declare -a script_map=()
+    
+    for item in "${software[@]}"; do
+        IFS='|' read -r name desc script selected <<< "$item"
+        display_options+=("$name" "$desc")
+        script_map+=("$script")
     done
 
     # Run gum choose (allow multiple selections)
-    selected=$(gum choose --no-limit --height=14 --header="Select software to install (space to toggle, Enter to confirm):" \
-        "${selected_flags[@]}" "${install_scripts[@]}")
+    selected=$(gum choose --no-limit --height=14 \
+        --header="Select software to install (space to toggle, Enter to confirm):" \
+        "${display_options[@]}")
 
-    # user cancelled or no selection
+    # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
-        echo "Installation cancelled or no selection made."
+        gum style --foreground 244 "Installation cancelled or no selection made."
         exit 0
     fi
 
-    # selected is newline-separated; iterate and run scripts
-    IFS=$'\n' read -r -d '' -a selected_array <<< "${selected}" || true
-    echo
-    echo "Installing selected software..."
-    for item in "${selected_array[@]}"; do
-        echo "-> $item"
-        if [[ -x "./$item" ]]; then
-            "./$item"
-        else
-            echo "Warning: $item not executable or not found in current directory."
-        fi
+    # Parse selected items and run corresponding scripts
+    echo ""
+    gum style --foreground 212 --bold "Installing selected software..."
+    echo ""
+    
+    mapfile -t selected_array <<<"$selected"
+    
+    for selected_name in "${selected_array[@]}"; do
+        # Find matching script for selected name
+        for item in "${software[@]}"; do
+            IFS='|' read -r name desc script _ <<< "$item"
+            if [[ "$name" == "$selected_name" ]]; then
+                gum spin --title "Installing $name..." -- sleep 0.5
+                if [[ -x "$script" ]]; then
+                    "$script"
+                    gum style --foreground 40 "✓ $name installed"
+                else
+                    gum warn "$script not found or not executable"
+                fi
+                break
+            fi
+        done
     done
-    echo "All selected installs attempted."
+    
+    echo ""
+    gum style --foreground 40 --bold "All selected installations complete!"
 }
 
 # Function to ask about alternative screensavers using gum
 ask_screensavers_with_info() {
-    if gum confirm --default "Do you want to install alternative screensavers?"; then
-        # Show multi-line information about options, then prompt selection
+    if gum confirm --default=false "Do you want to install alternative screensavers?"; then
         cat <<'INFO'
 
 Available screensaver options:
@@ -68,41 +86,45 @@ sysc-walls
 
 INFO
 
-        # Let user pick one (single choice). Use gum choose with limit 1.
-        choice=$(gum choose --limit 1 --height=6 --header="Select a screensaver to install:" \
+        # Let user pick one (single choice)
+        choice=$(gum choose --limit 1 --height=6 \
+            --prompt="Select a screensaver to install:" \
             "neo-matrix" "sysc-walls")
 
         if [[ -n "${choice:-}" ]]; then
             case "$choice" in
                 neo-matrix)
-                    echo "Installing neo-matrix..."
-                    if [[ -x "./install-neo-matrix.sh" ]]; then
-                        ./install-neo-matrix.sh
+                    gum spin --title "Installing neo-matrix..." -- sleep 0.5
+                    if [[ -x "./scripts/install-neo-matrix.sh" ]]; then
+                        ./scripts/install-neo-matrix.sh
                     else
-                        echo "install-neo-matrix.sh not found or not executable."
+                        gum warn "install-neo-matrix.sh not found or not executable."
                     fi
                     ;;
                 sysc-walls)
-                    echo "Installing sysc-walls..."
-                    if [[ -x "./install-sysc-walls.sh" ]]; then
-                        ./install-sysc-walls.sh
+                    gum spin --title "Installing sysc-walls..." -- sleep 0.5
+                    if [[ -x "./scripts/install-sysc-walls.sh" ]]; then
+                        ./scripts/install-sysc-walls.sh
                     else
-                        echo "install-sysc-walls.sh not found or not executable."
+                        gum warn "install-sysc-walls.sh not found or not executable."
                     fi
                     ;;
             esac
         else
-            echo "No screensaver selected."
+            gum style --foreground 244 "No screensaver selected."
         fi
     else
-        echo "Skipping alternative screensavers."
+        gum style --foreground 244 "Skipping alternative screensavers."
     fi
 }
 
 # Ensure gum is installed
 if ! command -v gum &>/dev/null; then
-    echo "gum not found. Install gum first: https://github.com/charmbracelet/gum"
-    exit 1
+    echo "gum not found. Installing gum..."
+    sudo pacman -S --noconfirm --needed gum || {
+        echo "Failed to install gum. Please install it manually."
+        exit 1
+    }
 fi
 
 # Run main flow
@@ -110,15 +132,22 @@ show_gum_menu
 clear
 ask_screensavers_with_info
 
-# follow-up tasks
-if [[ -x "./install-dotfiles.sh" ]]; then
-    ./install-dotfiles.sh
+# Follow-up tasks
+echo ""
+gum style --foreground 212 --bold "Running post-install configurations..."
+echo ""
+
+if [[ -x "./scripts/install-dotfiles.sh" ]]; then
+    gum spin --title "Setting up dotfiles..." -- ./scripts/install-dotfiles.sh
 else
-    echo "install-dotfiles.sh not found or not executable; skipping."
+    gum warn "install-dotfiles.sh not found or not executable; skipping."
 fi
 
-if [[ -x "./remove-apps.sh" ]]; then
-    ./remove-apps.sh
+if [[ -x "./scripts/remove-apps.sh" ]]; then
+    gum spin --title "Removing unwanted applications..." -- ./scripts/remove-apps.sh
 else
-    echo "remove-apps.sh not found or not executable; skipping."
+    gum warn "remove-apps.sh not found or not executable; skipping."
 fi
+
+echo ""
+gum style --foreground 40 --bold "Installation complete! Please reboot your system."
