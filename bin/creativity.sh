@@ -80,7 +80,7 @@ show_creativity_menu() {
             fi
             
             # Run the installation script and capture errors
-            if output=$(gum spin --title "Installing $name..." -- "$script" 2>&1); then
+            if output=$(gum spin --spinner globe --show-output --title "Installing $name..." -- "$script" 2>&1); then
                 gum style --foreground 40 "✓ $name installed successfully"
                 successful_installs+=("$name")
             else
