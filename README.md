@@ -1,14 +1,15 @@
-# Omarchy-Supplement
+# Omarchy-Okonomi
 
 ### Purpose:
-The purpose of this repo is to hold my personal preferences for customising Omarchy to the way I like it. These will be applied to the base install of Omarchy.  
+The purpose of this repo is to add some setup choice on tyop of Omarchy to fit your needs. Your choices should be applied to a freash, upgraded base install of Omarchy.  
 
-Omarchy is based on the concept of "Opinionated Arch Linux", taking inspiration from the japanese word Omakase (お任せ), meaning "I'll leave it up to you".  
-This repo flips that and starts with Omarchy, then adds some choice into the mix.
+Omarchy is based on the concept of "Opinionated Arch Linux", taking inspiration from the japanese word Omakase.  
+Omakase (お任せ), meaning "I'll leave it up to you" or "Chef's choice".  
+This repo flips that and starts with Omarchy, then adds some choice into the mix.  
 
-i.e. Okonomi (お好み) meaning "as you like" or "your preference".  
+i.e. Okonomi (お好み) meaning "as you like" or "Customers choice".  
 
-Therefore this is Omarchy-Supplement, or Omarchy-Okonomi. ("customers choice" not "chefs choice")  
+Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")  
 
 ---  
 
