@@ -15,20 +15,20 @@ fi
 show_creativity_menu() {
     # Define creativity array with: name, description, install script, selected (true/false)
     declare -a creativity=(
-        "DisplayCAL|Open Source Display Calibration and Characterization|./scripts/install-displaycal.sh|false"
-        "Rapid Photo|Rapid Photo Downloader for photographers|./scripts/install-rapid-photo.sh|false"
-        "Digikam|An advanced digital photo management application|./scripts/install-digikam.sh|false"
-        "Darktable|Utility to organize and develop raw images|./scripts/install-darktable.sh|false"
-        "Filmulator|Filmulator is a raw photo editing application|./scripts/install-filmulator.sh|false"
-        "GIMP|GNU Image Manipulation Program|./scripts/install-gimp.sh|false"
-        "Inkscape|Vector graphics editor|./scripts/install-inkscape.sh|false"
-        "Krita|Professional free and open source painting program|./scripts/install-krita.sh|false"
-        "Blender|3D creation suite|./scripts/install-blender.sh|false"
-        "Audacity|Free, open source, cross-platform audio software|./scripts/install-audacity.sh|false"
-        "DaVinci Resolve|Professional video editing software|./scripts/install-davinci-resolve.sh|false"
-        "WinFF|GUI for ffmpeg for video format conversion|./scripts/install-winff.sh|false"  
-        "Scribus|Desktop publishing application|./scripts/install-scribus.sh|false"  
-        "Upscayl|Free and Open Source AI Image Upscaler|./scripts/install-upscayl.sh|false"
+        "DisplayCAL|Open Source Display Calibration and Characterization|./bin/install-displaycal.sh|false"
+        "Rapid Photo|Rapid Photo Downloader for photographers|./bin/install-rapid-photo.sh|false"
+        "Digikam|An advanced digital photo management application|./bin/install-digikam.sh|false"
+        "Darktable|Utility to organize and develop raw images|./bin/install-darktable.sh|false"
+        "Filmulator|Filmulator is a raw photo editing application|./bin/install-filmulator.sh|false"
+        "GIMP|GNU Image Manipulation Program|./bin/install-gimp.sh|false"
+        "Inkscape|Vector graphics editor|./bin/install-inkscape.sh|false"
+        "Krita|Professional free and open source painting program|./bin/install-krita.sh|false"
+        "Blender|3D creation suite|./bin/install-blender.sh|false"
+        "Audacity|Free, open source, cross-platform audio software|./bin/install-audacity.sh|false"
+        "DaVinci Resolve|Professional video editing software|./bin/install-davinci-resolve.sh|false"
+        "WinFF|GUI for ffmpeg for video format conversion|./bin/install-winff.sh|false"  
+        "Scribus|Desktop publishing application|./bin/install-scribus.sh|false"  
+        "Upscayl|Free and Open Source AI Image Upscaler|./bin/install-upscayl.sh|false"
     )
 
     # Build display options and keep track of mapping
@@ -74,7 +74,7 @@ show_creativity_menu() {
                 "$script"
                 gum style --foreground 40 "✓ $name installed successfully"
             else
-                gum warn "$script not found or not executable"
+                gum style --foreground 1 "✗ $script not found or not executable"
             fi
         fi
     done

@@ -15,11 +15,11 @@ fi
 show_browser_menu() {
     # Define browser array with: name, description, install script, selected (true/false)
     declare -a browsers=(
-        "Firefox|Open-source web browser by Mozilla|./scripts/install-firefox.sh|false"
-        "Zen Browser|Privacy-focused Firefox fork|./scripts/install-zen-browser.sh|false"
-        "Tor Browser|Anonymous web browsing over the Tor network|./scripts/install-tor-browser.sh|false"
-        "Brave|Privacy-focused Chromium-based browser|./scripts/install-brave.sh|false"
-        "Opera|Feature-rich Chromium-based browser|./scripts/install-opera.sh|false"
+        "Firefox|Open-source web browser by Mozilla|./bin/install-firefox.sh|false"
+        "Zen Browser|Privacy-focused Firefox fork|./bin/install-zen-browser.sh|false"
+        "Tor Browser|Anonymous web browsing over the Tor network|./bin/install-tor-browser.sh|false"
+        "Brave|Privacy-focused Chromium-based browser|./bin/install-brave.sh|false"
+        "Opera|Feature-rich Chromium-based browser|./bin/install-opera.sh|false"
     )
 
     # Build display options and keep track of mapping
@@ -65,7 +65,7 @@ show_browser_menu() {
                 "$script"
                 gum style --foreground 40 "✓ $name installed successfully"
             else
-                gum warn "$script not found or not executable"
+                gum style --foreground 1 "✗ $script not found or not executable"
             fi
         fi
     done
