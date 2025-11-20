@@ -136,16 +136,16 @@ echo ""
 gum style --foreground 212 --bold "Running post-install configurations..."
 echo ""
 
-if [[ -x "./bin/install-dotfiles.sh" ]]; then
-    gum spin --title "Setting up dotfiles..." -- ./bin/install-dotfiles.sh
+if [[ -x "./scripts/install-dotfiles.sh" ]]; then
+    gum spin --title "Setting up dotfiles..." -- ./scripts/install-dotfiles.sh
 else
-    gum warn "install-dotfiles.sh not found or not executable; skipping."
+    gum style --foreground 1 "✗ Failed (install-dotfiles.sh not found or not executable; skipping.):"
 fi
 
-if [[ -x "./bin/remove-apps.sh" ]]; then
-    gum spin --title "Removing unwanted applications..." -- ./bin/remove-apps.sh
+if [[ -x "./scripts/remove-apps.sh" ]]; then
+    gum spin --title "Removing unwanted applications..." -- ./scripts/remove-apps.sh
 else
-    gum warn "remove-apps.sh not found or not executable; skipping."
+    gum style --foreground 1 "✗ Failed (remove-apps.sh not found or not executable; skipping.):"
 fi
 
 echo ""
