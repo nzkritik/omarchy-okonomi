@@ -18,14 +18,15 @@ show_gum_menu() {
         "Tixati|Torrent client|./bin/install-tixati.sh|false"
     )
 
-    # Build display options and track scripts
+    # Build display options and keep track of mapping
+    declare -A software_map=()
     declare -a display_options=()
-    declare -a script_map=()
     
     for item in "${software[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
-        display_options+=("$name - $desc")
-        script_map+=("$script")
+        display_key="$name - $desc"
+        display_options+=("$display_key")
+        software_map["$display_key"]="$name|$desc|$script"
     done
 
     # Run gum choose (allow multiple selections)
@@ -46,21 +47,19 @@ show_gum_menu() {
     
     mapfile -t selected_array <<<"$selected"
     
-    for selected_name in "${selected_array[@]}"; do
-        # Find matching script for selected name
-        for item in "${software[@]}"; do
-            IFS='|' read -r name desc script _ <<< "$item"
-            if [[ "$name" == "$selected_name" ]]; then
-                gum spin --title "Installing $name..." -- sleep 0.5
-                if [[ -x "$script" ]]; then
-                    "$script"
-                    gum style --foreground 40 "✓ $name installed"
-                else
-                    gum warn "$script not found or not executable"
-                fi
-                break
+    for selected_item in "${selected_array[@]}"; do
+        # Get the software info from the map
+        if [[ -n "${software_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${software_map[$selected_item]}"
+            
+            gum spin --title "Installing $name..." -- sleep 0.5
+            if [[ -x "$script" ]]; then
+                "$script"
+                gum style --foreground 40 "✓ $name installed"
+            else
+                gum warn "$script not found or not executable"
             fi
-        done
+        fi
     done
     
     echo ""
@@ -95,16 +94,16 @@ INFO
             case "$choice" in
                 neo-matrix)
                     gum spin --title "Installing neo-matrix..." -- sleep 0.5
-                    if [[ -x "./scripts/install-neo-matrix.sh" ]]; then
-                        ./scripts/install-neo-matrix.sh
+                    if [[ -x "./bin/install-neo-matrix.sh" ]]; then
+                        ./bin/install-neo-matrix.sh
                     else
                         gum warn "install-neo-matrix.sh not found or not executable."
                     fi
                     ;;
                 sysc-walls)
                     gum spin --title "Installing sysc-walls..." -- sleep 0.5
-                    if [[ -x "./scripts/install-sysc-walls.sh" ]]; then
-                        ./scripts/install-sysc-walls.sh
+                    if [[ -x "./bin/install-sysc-walls.sh" ]]; then
+                        ./bin/install-sysc-walls.sh
                     else
                         gum warn "install-sysc-walls.sh not found or not executable."
                     fi
@@ -137,14 +136,14 @@ echo ""
 gum style --foreground 212 --bold "Running post-install configurations..."
 echo ""
 
-if [[ -x "./scripts/install-dotfiles.sh" ]]; then
-    gum spin --title "Setting up dotfiles..." -- ./scripts/install-dotfiles.sh
+if [[ -x "./bin/install-dotfiles.sh" ]]; then
+    gum spin --title "Setting up dotfiles..." -- ./bin/install-dotfiles.sh
 else
     gum warn "install-dotfiles.sh not found or not executable; skipping."
 fi
 
-if [[ -x "./scripts/remove-apps.sh" ]]; then
-    gum spin --title "Removing unwanted applications..." -- ./scripts/remove-apps.sh
+if [[ -x "./bin/remove-apps.sh" ]]; then
+    gum spin --title "Removing unwanted applications..." -- ./bin/remove-apps.sh
 else
     gum warn "remove-apps.sh not found or not executable; skipping."
 fi
