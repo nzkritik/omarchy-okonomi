@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -u
 
 # Ensure gum is installed
 if ! command -v gum &>/dev/null; then
@@ -62,6 +62,10 @@ show_creativity_menu() {
     gum style --foreground 212 --bold "Installing selected creativity Apps..."
     echo ""
     
+    # Track installation results
+    declare -a failed_installs=()
+    declare -a successful_installs=()
+    
     mapfile -t selected_array <<<"$selected"
     
     for selected_item in "${selected_array[@]}"; do
@@ -69,15 +73,46 @@ show_creativity_menu() {
         if [[ -n "${creativity_map[$selected_item]:-}" ]]; then
             IFS='|' read -r name desc script <<< "${creativity_map[$selected_item]}"
             
-            gum spin --title "Installing $name..." -- sleep 0.5
-            if [[ -x "$script" ]]; then
-                "$script"
-                gum style --foreground 40 "✓ $name installed successfully"
-            else
+            if [[ ! -x "$script" ]]; then
                 gum style --foreground 1 "✗ $script not found or not executable"
+                failed_installs+=("$name")
+                continue
+            fi
+            
+            # Run the installation script and capture errors
+            if output=$(gum spin --title "Installing $name..." -- "$script" 2>&1); then
+                gum style --foreground 40 "✓ $name installed successfully"
+                successful_installs+=("$name")
+            else
+                exit_code=$?
+                gum style --foreground 1 "✗ Failed to install $name (exit code: $exit_code)"
+                echo "$output" | gum style --foreground 242
+                failed_installs+=("$name")
+                # Continue to next installation instead of exiting
+                continue
             fi
         fi
     done
+    
+    # Summary
+    echo ""
+    gum style --foreground 212 --bold "Installation Summary"
+    gum style --foreground 212 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    if [[ ${#successful_installs[@]} -gt 0 ]]; then
+        gum style --foreground 40 "✓ Successful (${#successful_installs[@]}):"
+        for app in "${successful_installs[@]}"; do
+            gum style --foreground 40 "  • $app"
+        done
+    fi
+    
+    if [[ ${#failed_installs[@]} -gt 0 ]]; then
+        echo ""
+        gum style --foreground 1 "✗ Failed (${#failed_installs[@]}):"
+        for app in "${failed_installs[@]}"; do
+            gum style --foreground 1 "  • $app"
+        done
+    fi
     
     echo ""
     gum style --foreground 40 --bold "Creativity App installation complete!"
