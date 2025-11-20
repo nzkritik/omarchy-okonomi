@@ -59,7 +59,7 @@ show_creativity_menu() {
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected creativity Apps..."
+    gum style --foreground 212 --bold "Installing selected creativity Apps. This can take some time..."
     echo ""
     
     # Track installation results
