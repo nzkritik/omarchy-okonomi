@@ -19,7 +19,7 @@ show_creativity_menu() {
         "Rapid Photo|Rapid Photo Downloader for photographers|./bin/install-rapid-photo.sh|false"
         "Digikam|An advanced digital photo management application|./bin/install-digikam.sh|false"
         "Darktable|Utility to organize and develop raw images|./bin/install-darktable.sh|false"
-        "Filmulator|Filmulator is a raw photo editing application|./bin/install-filmulator.sh|false"
+        #"Filmulator|Filmulator is a raw photo editing application|./bin/install-filmulator.sh|false"
         "GIMP|GNU Image Manipulation Program|./bin/install-gimp.sh|false"
         "Inkscape|Vector graphics editor|./bin/install-inkscape.sh|false"
         "Krita|Professional free and open source painting program|./bin/install-krita.sh|false"

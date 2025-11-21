@@ -70,18 +70,29 @@ show_browser_menu() {
                 continue
             fi
             
-            # Run the installation script and capture errors
-            if output=$(gum spin --title "Installing $name..." -- "$script" 2>&1); then
+            # Create temp file for output
+            local output_file
+            output_file=$(mktemp)
+            
+            # Run the installation script in a subshell and capture output
+            gum style --foreground 212 "→ Installing $name..."
+            if "$script" > "$output_file" 2>&1; then
                 gum style --foreground 40 "✓ $name installed successfully"
                 successful_installs+=("$name")
             else
                 exit_code=$?
                 gum style --foreground 1 "✗ Failed to install $name (exit code: $exit_code)"
-                echo "$output" | gum style --foreground 242
+                
+                # Show last 10 lines of error output
+                gum style --foreground 242 "Last output:"
+                tail -10 "$output_file" | gum style --foreground 242
+                
                 failed_installs+=("$name")
-                # Continue to next installation instead of exiting
-                continue
             fi
+            
+            # Clean up temp file
+            rm -f "$output_file"
+            echo ""
         fi
     done
     
