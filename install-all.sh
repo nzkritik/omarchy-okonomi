@@ -29,6 +29,8 @@ show_gum_menu_intro() {
 show_gum_menu() {
     # Define software array with: name, description, script, selected (true/false)
     declare -a software=(
+        "Remove Omarchy Apps|Uninstall default Omarchy applications|omarchy-pkg-remove|false"
+        "Remove Omarchy Webapps|Uninstall default Omarchy webapps|omarchy-webapp-remove|false"
         "Web Browsers|Various web browsers|./bin/browsers.sh|false"
         "Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
         "Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
@@ -52,7 +54,7 @@ show_gum_menu() {
 
     # Run gum choose (allow multiple selections)
     selected=$(gum choose --no-limit --height=14 \
-        --header="Select software to install (space to toggle, Enter to confirm):" \
+        --header="Select Categories to Customize (space to toggle, Enter to confirm):" \
         "${display_options[@]}")
 
     # User cancelled or no selection
@@ -63,7 +65,7 @@ show_gum_menu() {
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected software..."
+    gum style --foreground 212 --bold "Lets customize..."
     echo ""
     
     mapfile -t selected_array <<<"$selected"

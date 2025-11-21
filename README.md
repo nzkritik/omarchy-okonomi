@@ -25,8 +25,8 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
 * Install omarchy
 * Do a system update (using the built-in update omarchy)
 * Clone this repo  
-```git clone https://github.com/nzkritik/omarchy-supplement.git```   
-```cd omarchy-supplement```   
+```git clone https://github.com/nzkritik/omarchy-okonomi.git```   
+```cd omarchy-okonomi```   
 * (Optional) Review the files and make changes to suit your needs
 * Run the install script   
 ```./install-all.sh```  
@@ -34,10 +34,12 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
 
 ### ToDo list:
 - [ ] configure install script to provide more flexible options for installs  
-  - [X] organise the install scripts into categories and shift them to a sub-folder  
+  - [X] organise the install scripts into categories and shift them to a sub-folder 
+    - [X] Option to remove some Omarchy Default Apps
+    - [X] Option to remove some Omarchy Default Webapps 
     - [X] Web Browsers  
     - [X] Creativity Apps  
-    - [ ] Torrent Apps  
+    - [X] Torrent Apps  
     - [ ] Development Apps  
     - [ ] File Management Apps  
     - [ ] System Tools/Utilities  
