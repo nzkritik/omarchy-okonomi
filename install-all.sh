@@ -29,8 +29,8 @@ show_gum_menu_intro() {
 show_gum_menu() {
     # Define software array with: name, description, script, selected (true/false)
     declare -a software=(
-        "Remove Omarchy Apps|Uninstall default Omarchy applications|omarchy-pkg-remove|false"
-        "Remove Omarchy Webapps|Uninstall default Omarchy webapps|omarchy-webapp-remove|false"
+        "Remove Omarchy Apps|Uninstall default Omarchy applications|~/.local/share/omarchy/bin/omarchy-pkg-remove|false"
+        "Remove Omarchy Webapps|Uninstall default Omarchy webapps|~/.local/share/omarchy/bin/omarchy-webapp-remove|false"
         "Install Web Browsers|Various web browsers|./bin/browsers.sh|false"
         "Install Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
         "Install Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
