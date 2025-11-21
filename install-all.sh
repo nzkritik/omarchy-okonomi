@@ -12,7 +12,7 @@ title="
 "
 
 show_title() {
-    gum style --border normal --border-foreground 6 --padding "1 2" "$title"
+    gum style --foreground 40 --bold "$title"
     echo ""
 }
 
