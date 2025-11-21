@@ -20,10 +20,7 @@ show_title() {
 show_gum_menu_intro() {
     gum style --border normal --border-foreground 6 --padding "1 2" \
     "Welcome to the Omarchy Okonomi (Omarchy Customizer)" \
-    "" \
-    "• You can select Categories to further customize" \
-    "• Each Category contains multiple software options" \
-    "• You can choose multiple options within each Category"
+    "Select high-level categories, then choose multiple apps from each."
 }
 # Function to display menu using gum
 show_gum_menu() {
@@ -97,6 +94,7 @@ if ! command -v gum &>/dev/null; then
 fi
 clear
 # Run main flow
+show_title
 show_gum_menu_intro
 show_gum_menu
 echo ""
