@@ -31,9 +31,9 @@ show_gum_menu() {
     declare -a software=(
         "Remove Omarchy Apps|Uninstall default Omarchy applications|omarchy-pkg-remove|false"
         "Remove Omarchy Webapps|Uninstall default Omarchy webapps|omarchy-webapp-remove|false"
-        "Web Browsers|Various web browsers|./bin/browsers.sh|false"
-        "Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
-        "Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
+        "Install Web Browsers|Various web browsers|./bin/browsers.sh|false"
+        "Install Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
+        "Install Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
         #"tmux|Terminal multiplexer|./bin/install-tmux.sh|false"
         #"stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
         "Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
@@ -80,7 +80,7 @@ show_gum_menu() {
                 "$script"
                 gum style --foreground 40 "✓ $name installed"
             else
-                gum warn "$script not found or not executable"
+                gum style --foreground 1 "$script not found or not executable"
             fi
         fi
     done
