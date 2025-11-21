@@ -74,16 +74,39 @@ show_browser_menu() {
             local output_file
             output_file=$(mktemp)
             
-            # Run the installation script in a subshell and capture output
-            gum style --foreground 212 "→ Installing $name..."
-            if "$script" > "$output_file" 2>&1; then
-                gum style --foreground 40 "✓ $name installed successfully"
+            # Display installation header
+            gum style --foreground 212 --bold "→ Installing $name..."
+            gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            
+            # Run the installation script in background and tail output in real-time
+            "$script" > "$output_file" 2>&1 &
+            local pid=$!
+            
+            # Tail the output file in real-time until the process completes
+            tail -f "$output_file" &
+            local tail_pid=$!
+            
+            # Wait for the installation to complete
+            if wait $pid 2>/dev/null; then
+                # Kill the tail process
+                kill $tail_pid 2>/dev/null || true
+                wait $tail_pid 2>/dev/null || true
+                
+                # Show final success message
+                echo ""
+                gum style --foreground 40 --bold "✓ $name installed successfully"
                 successful_installs+=("$name")
             else
                 exit_code=$?
-                gum style --foreground 1 "✗ Failed to install $name (exit code: $exit_code)"
+                # Kill the tail process
+                kill $tail_pid 2>/dev/null || true
+                wait $tail_pid 2>/dev/null || true
                 
-                # Show last 10 lines of error output
+                # Show final error message
+                echo ""
+                gum style --foreground 1 --bold "✗ Failed to install $name (exit code: $exit_code)"
+                
+                # Show last 10 lines of output for context
                 gum style --foreground 242 "Last output:"
                 tail -10 "$output_file" | gum style --foreground 242
                 
