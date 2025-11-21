@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+# I need to rewrite this script to utilise the existing omarchy remove app and web apps functionality
+
 ICON_DIR="$HOME/.local/share/applications/icons"
 DESKTOP_DIR="$HOME/.local/share/applications/"
 
