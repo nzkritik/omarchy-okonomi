@@ -8,11 +8,12 @@ title="
    / _ \ | '__/ __| '_ \  | |   | | '_ \| | | \ \/ /
   / ___ \| | | (__| | | | | |___| | | | | |_| |>  < 
  /_/   \_\_|  \___|_| |_| |_____|_|_| |_|\__,_/_/\_\
-    Omarchy Okonomi - Custom Software Installer                                                    
+                                                   
 "
 
 show_title() {
-    gum style --foreground 40 --bold "$title"
+    gum style --foreground 40 --bold "$title"  \
+    "   Omarchy Okonomi - Custom Software Installer"
     echo ""
 }
 
