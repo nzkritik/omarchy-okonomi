@@ -21,7 +21,8 @@ show_title() {
 show_gum_menu_intro() {
     gum style --border normal --border-foreground 6 --padding "1 2" \
     "Welcome to the Omarchy Okonomi (Omarchy Customizer)" \
-    "Select high-level categories, then choose multiple apps from each."
+    "- Select high-level categories" \
+    "- Then choose multiple apps from each."
 }
 # Function to display menu using gum
 show_gum_menu() {
