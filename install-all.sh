@@ -2,6 +2,21 @@
 
 set -euo pipefail
 
+title=: "
+     _             _       _     _                  
+    / \   _ __ ___| |__   | |   (_)_ __  _   ___  __
+   / _ \ | '__/ __| '_ \  | |   | | '_ \| | | \ \/ /
+  / ___ \| | | (__| | | | | |___| | | | | |_| |>  < 
+ /_/   \_\_|  \___|_| |_| |_____|_|_| |_|\__,_/_/\_\
+                                                    
+"
+
+show_title() {
+    gum style --border normal --border-foreground 6 --padding "1 2" "$title"
+    echo ""
+}
+
+# Function to show introductory message
 show_gum_menu_intro() {
     gum style --border normal --border-foreground 6 --padding "1 2" \
     "Welcome to the Omarchy Okonomi (Omarchy Customizer)" \
@@ -16,14 +31,12 @@ show_gum_menu() {
     declare -a software=(
         "Web Browsers|Various web browsers|./bin/browsers.sh|false"
         "Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
+        "Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
         #"tmux|Terminal multiplexer|./bin/install-tmux.sh|false"
         #"stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
-        #"neo-matrix|Matrix-style screensaver|./bin/install-neo-matrix.sh|false"
         "Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
         "KVM|Virtualization|./bin/install-kvm.sh|false"
-        #"Sysc Walls|Wallpaper manager|./bin/install-sysc-walls.sh|false"
         "VS Code|Code editor|./bin/install-vscode.sh|false"
-        "Tixati|Torrent client|./bin/install-tixati.sh|false"
     )
 
     # Build display options and keep track of mapping

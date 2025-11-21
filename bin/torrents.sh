@@ -11,54 +11,46 @@ if ! command -v gum &>/dev/null; then
     }
 fi
 
-# Function to display creativity selection menu
-show_creativity_menu() {
-    # Define creativity array with: name, description, install script, selected (true/false)
-    declare -a creativity=(
-        "DisplayCAL|Open Source Display Calibration and Characterization|./bin/install-displaycal.sh|false"
-        "Rapid Photo|Rapid Photo Downloader for photographers|./bin/install-rapid-photo.sh|false"
-        "Digikam|An advanced digital photo management application|./bin/install-digikam.sh|false"
-        "Darktable|Utility to organize and develop raw images|./bin/install-darktable.sh|false"
-        "GIMP|GNU Image Manipulation Program|./bin/install-gimp.sh|false"
-        "Inkscape|Vector graphics editor|./bin/install-inkscape.sh|false"
-        "Krita|Professional free and open source painting program|./bin/install-krita.sh|false"
-        "Blender|3D creation suite|./bin/install-blender.sh|false"
-        "Audacity|Free, open source, cross-platform audio software|./bin/install-audacity.sh|false"
-        "DaVinci Resolve|Professional video editing software|./bin/install-davinci-resolve.sh|false"
-        "WinFF|GUI for ffmpeg for video format conversion|./bin/install-winff.sh|false"  
-        "Scribus|Desktop publishing application|./bin/install-scribus.sh|false"  
-        "Upscayl|Free and Open Source AI Image Upscaler|./bin/install-upscayl.sh|false"
+# Function to display torrent app selection menu
+show_torrent_menu() {
+    # Define torrent array with: name, description, install script, selected (true/false)
+    declare -a torrents=(
+        "Transmission|Lightweight torrent client|./bin/install-transmission.sh|false"
+        "Deluge|Feature-rich torrent client|./bin/install-deluge.sh|false"
+        "qBittorrent|Cross-platform torrent client|./bin/install-qbittorrent.sh|false"
+        "Tixati|Proprietary torrent client|./bin/install-tixati.sh|false"
+        "Rtorrent|Command-line torrent client|./bin/install-rtorrent.sh|false"
     )
 
     # Build display options and keep track of mapping
-    declare -A creativity_map=()
+    declare -A torrent_map=()
     declare -a display_options=()
     
-    for item in "${creativity[@]}"; do
+    for item in "${torrents[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        creativity_map["$display_key"]="$name|$desc|$script"
+        torrent_map["$display_key"]="$name|$desc|$script"
     done
 
-    # Show creativity App selection menu
-    gum style --foreground 212 --bold "Creativity Installation"
+    # Show torrent App selection menu
+    gum style --foreground 212 --bold "Web Torrent Installation"
     echo ""
-    gum style "Select creativity Apps to install (space to toggle, Enter to confirm):"
+    gum style "Select torrent Apps to install (space to toggle, Enter to confirm):"
     echo ""
 
-    selected=$(gum choose --no-limit --height=15 \
+    selected=$(gum choose --no-limit --height=10 \
         "${display_options[@]}")
 
     # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
-        gum style --foreground 244 "No creativity Apps selected."
+        gum style --foreground 244 "No torrent Apps selected."
         exit 0
     fi
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected creativity Apps. This can take some time..."
+    gum style --foreground 212 --bold "Installing selected torrent Apps.."
     echo ""
     
     # Track installation results
@@ -68,9 +60,9 @@ show_creativity_menu() {
     mapfile -t selected_array <<<"$selected"
     
     for selected_item in "${selected_array[@]}"; do
-        # Get the app info from the map
-        if [[ -n "${creativity_map[$selected_item]:-}" ]]; then
-            IFS='|' read -r name desc script <<< "${creativity_map[$selected_item]}"
+        # Get the torrent info from the map
+        if [[ -n "${torrent_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${torrent_map[$selected_item]}"
             
             if [[ ! -x "$script" ]]; then
                 gum style --foreground 1 "✗ $script not found or not executable"
@@ -148,8 +140,8 @@ show_creativity_menu() {
     fi
     
     echo ""
-    gum style --foreground 40 --bold "Creativity App installation complete!"
+    gum style --foreground 40 --bold "Torrent App installation complete!"
 }
 
-# Run the creativity menu
-show_creativity_menu
+# Run the torrent menu
+show_torrent_menu

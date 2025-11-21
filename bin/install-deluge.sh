@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# Install firefox
-sudo pacman -S --noconfirm firefox --needed
+# Install Deluge
+sudo pacman -S --noconfirm deluge --needed
 # add any additional configuration steps below if needed
