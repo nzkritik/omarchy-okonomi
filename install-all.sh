@@ -12,8 +12,8 @@ title="
 "
 
 show_title() {
-    gum style --foreground 40 --bold "$title"  \
-    "   Omarchy Okonomi - Custom Software Installer"
+    gum style --foreground 40 --bold "$title"
+    gum style --foreground 212 --bold "   Omarchy Okonomi - Custom Software Installer"
     echo ""
 }
 
@@ -21,8 +21,9 @@ show_title() {
 show_gum_menu_intro() {
     gum style --border normal --border-foreground 6 --padding "1 2" \
     "Welcome to the Omarchy Okonomi (Omarchy Customizer)" \
-    "- Select high-level categories" \
-    "- Then choose multiple apps from each."
+    "" \
+    "• Select high-level categories" \
+    "• Then choose multiple apps from each."
 }
 # Function to display menu using gum
 show_gum_menu() {
