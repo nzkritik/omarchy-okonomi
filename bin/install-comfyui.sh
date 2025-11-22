@@ -13,8 +13,8 @@ fi
 
 # Ensure anaconda/conda is installed
 if ! command -v conda &>/dev/null; then
-    gum style --foreground 1 "Error: Anaconda/Conda is not installed. Installing now..."
-    yay -S --noconfirm --needed anaconda|| {
+    gum style --foreground 1 "conda is not installed. Installing now..."
+    yay -S --noconfirm --needed miniconda3|| {
         gum style --foreground 1 "Failed to install Anaconda/Conda. Please install it manually."
         exit 1
     }
