@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ORIGINAL_DIR=$(pwd)
 set -u
 
 # Ensure gum is installed
@@ -19,7 +19,7 @@ if ! command -v conda &>/dev/null; then
         exit 1
     }
 fi
-
+clear
 # Display installation header
 gum style --foreground 212 --bold "ComfyUI Installation"
 echo ""
@@ -27,6 +27,7 @@ gum style --foreground 242 "This script will install ComfyUI and configure it fo
 echo ""
 
 # Clone ComfyUI repository
+cd ~
 gum style --foreground 212 --bold "→ Cloning ComfyUI repository..."
 if git clone https://github.com/comfyanonymous/ComfyUI.git; then
     gum style --foreground 40 "✓ ComfyUI repository cloned successfully"
@@ -92,7 +93,7 @@ case "$gpu_choice" in
         gum style "Installing PyTorch for AMD GPU (ROCm 6.0)..."
         echo ""
         
-        if pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.0 > "$output_file" 2>&1 &
+        if python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.0 > "$output_file" 2>&1 &
         then
             pid=$!
             tail -f "$output_file" &

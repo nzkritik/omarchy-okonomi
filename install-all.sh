@@ -38,8 +38,8 @@ show_gum_menu() {
         "Install AI Tools|AI-powered applications and tools|./bin/ai-tools.sh|false"
         #"tmux|Terminal multiplexer|./bin/install-tmux.sh|false"
         #"stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
-        "Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
-        "KVM|Virtualization|./bin/install-kvm.sh|false"
+        #"Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
+        #"KVM|Virtualization|./bin/install-kvm.sh|false"
     )
 
     # Build display options and keep track of mapping
@@ -55,7 +55,7 @@ show_gum_menu() {
 
     # Run gum choose (allow multiple selections)
     selected=$(gum choose --no-limit --height=14 \
-        --header="Select Categories to Customize (space to toggle, Enter to confirm):" \
+        --header="Select Categories to Customize (Tab to toggle, Enter to confirm):" \
         "${display_options[@]}")
 
     # User cancelled or no selection
