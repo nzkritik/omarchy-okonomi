@@ -19,6 +19,14 @@ if ! command -v conda &>/dev/null; then
         exit 1
     }
 fi
+
+if ! command -v pip3 &>/dev/null; then
+    gum style --foreground 1 "cpip3 is not installed. Installing now..."
+    sudo pacman -S --noconfirm python-pip --needed|| {
+        gum style --foreground 1 "Failed to install Anaconda/Conda. Please install it manually."
+        exit 1
+    }
+fi
 clear
 # Display installation header
 gum style --foreground 212 --bold "ComfyUI Installation"
