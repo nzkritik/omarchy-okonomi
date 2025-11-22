@@ -15,23 +15,23 @@ fi
 show_language_menu() {
     # Define Development Language array with: name, description, install script, selected (true/false)
     declare -a languages=(
-        "Ruby on Rails|Web application framework written in Ruby|./bin/install-dev-lang.sh ruby|false"
-        "Node.js|JavaScript runtime environment|./bin/install-dev-lang.sh node|false"
-        "Python|High-level programming language|./bin/install-dev-lang.sh python|false"
-        "Go|Statically typed, compiled programming language|./bin/install-dev-lang.sh go|false"
-        "laravel|PHP web application framework|./bin/install-dev-lang.sh laravel|false"
-        "Symfony|PHP web application framework|./bin/install-dev-lang.sh symfony|false" 
-        "Java|Popular programming language|./bin/install-dev-lang.sh java|false"
-        "bun|All-in-one JavaScript runtime|./bin/install-dev-lang.sh bun|false"
-        "Rust|Systems programming language focused on safety and performance|./bin/install-dev-lang.sh rust|false"
-        "PHP|Popular general-purpose scripting language|./bin/install-dev-lang.sh php|false"
-        "Elixir|Dynamic, functional language for building scalable applications|./bin/install-dev-lang.sh elixir|false"
-        "phoenix|Web development framework written in Elixir|./bin/install-dev-lang.sh phoenix|false"
-        "ocaml|General-purpose programming language with an emphasis on expressiveness and safety|./bin/install-dev-lang.sh ocaml|false"
-        "Clojure|Modern, dynamic, and functional dialect of Lisp on the JVM|./bin/install-dev-lang.sh clojure|false"  
-        "dotnet|Cross-platform framework for building applications|dotnet|false"
+        "Ruby on Rails|Web application framework written in Ruby|ruby|false"
+        "Node.js|JavaScript runtime environment|node|false"
+        "Python|High-level programming language|python|false"
+        "Go|Statically typed, compiled programming language|go|false"
+        "Laravel|PHP web application framework|laravel|false"
+        "Symfony|PHP web application framework|symfony|false" 
+        "Java|Popular programming language|java|false"
+        "Bun|All-in-one JavaScript runtime|bun|false"
+        "Rust|Systems programming language focused on safety and performance|rust|false"
+        "PHP|Popular general-purpose scripting language|php|false"
+        "Elixir|Dynamic, functional language for building scalable applications|elixir|false"
+        "Phoenix|Web development framework written in Elixir|phoenix|false"
+        "OCaml|General-purpose programming language with an emphasis on expressiveness and safety|ocaml|false"
+        "Clojure|Modern, dynamic, and functional dialect of Lisp on the JVM|clojure|false"  
+        "Dotnet|Cross-platform framework for building applications|dotnet|false"
     )
-    #Usage: omarchy-install-dev-env <ruby|node|bun|go|laravel|symfony|php|python|elixir|phoenix|rust|java|ocaml|dotnet|clojure>" 
+
     # Build display options and keep track of mapping
     declare -A language_map=()
     declare -a display_options=()
@@ -40,7 +40,7 @@ show_language_menu() {
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        Development_map["$display_key"]="$name|$desc|$script"
+        language_map["$display_key"]="$name|$desc|$script"
     done
 
     # Show Development selection menu
@@ -49,13 +49,13 @@ show_language_menu() {
     gum style "Select Development Languages to install (space to toggle, Enter to confirm):"
     echo ""
 
-    selected=$(gum choose --no-limit --height=10 \
+    selected=$(gum choose --no-limit --height=15 \
         "${display_options[@]}")
 
     # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
         gum style --foreground 244 "No Development Languages selected."
-        exit 0
+        return 0
     fi
 
     # Parse selected items and run corresponding scripts
@@ -74,12 +74,6 @@ show_language_menu() {
         if [[ -n "${language_map[$selected_item]:-}" ]]; then
             IFS='|' read -r name desc script <<< "${language_map[$selected_item]}"
             
-            if [[ ! -x "$script" ]]; then
-                gum style --foreground 1 "✗ $script not found or not executable"
-                failed_installs+=("$name")
-                continue
-            fi
-            
             # Create temp file for output
             local output_file
             output_file=$(mktemp)
@@ -88,8 +82,8 @@ show_language_menu() {
             gum style --foreground 212 --bold "→ Installing $name..."
             gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             
-            # Run the installation script in background and tail output in real-time
-            ./bin/install-dev-lang "$script" > "$output_file" 2>&1 &
+            # Run the omarchy-install-dev-env command with the language parameter
+            omarchy-install-dev-env "$script" > "$output_file" 2>&1 &
             local pid=$!
             
             # Tail the output file in real-time until the process completes
@@ -150,7 +144,7 @@ show_language_menu() {
     fi
     
     echo ""
-    gum style --foreground 40 --bold "Development installation complete!"
+    gum style --foreground 40 --bold "Development Language installation complete!"
 }
 
 # Function to display Development selection menu
@@ -160,12 +154,6 @@ show_development_menu() {
         "Visual Studio Code|Popular code editor by Microsoft|./bin/install-vscode.sh|false"
         "Sublime Text|Lightweight and fast code editor|./bin/install-sublime-text.sh|false"
         "Postman|API development and testing tool|./bin/install-postman.sh|false"
-        #"Node.js|JavaScript runtime environment|./bin/install-nodejs.sh|false"
-        #"PyCharm|Python IDE by JetBrains|./bin/install-pycharm.sh|false"
-        #"IntelliJ IDEA|Java IDE by JetBrains|./bin/install-intellij-idea.sh|false"
-        #"Android Studio|Official IDE for Android development|./bin/install-android-studio.sh|false"
-        #"venv|Python virtual environment manager|./bin/install-venv.sh|false"
-        #"conda|Cross-platform package and environment manager|./bin/install-conda.sh|false"
     )
 
     # Build display options and keep track of mapping
@@ -176,27 +164,27 @@ show_development_menu() {
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        Development_map["$display_key"]="$name|$desc|$script"
+        development_map["$display_key"]="$name|$desc|$script"
     done
 
     # Show Development selection menu
-    gum style --foreground 212 --bold "Web Development Installation"
+    gum style --foreground 212 --bold "Development Tools Installation"
     echo ""
-    gum style "Select Developments to install (space to toggle, Enter to confirm):"
+    gum style "Select Development Tools to install (space to toggle, Enter to confirm):"
     echo ""
 
-    selected=$(gum choose --no-limit --height=10 \
+    selected=$(gum choose --no-limit --height=5 \
         "${display_options[@]}")
 
     # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
-        gum style --foreground 244 "No Developments selected."
-        exit 0
+        gum style --foreground 244 "No Development Tools selected."
+        return 0
     fi
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected Developments..."
+    gum style --foreground 212 --bold "Installing selected Development Tools..."
     echo ""
     
     # Track installation results
@@ -225,7 +213,7 @@ show_development_menu() {
             gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             
             # Run the installation script in background and tail output in real-time
-            ./bin/install-dev-lang "$script" > "$output_file" 2>&1 &
+            "$script" > "$output_file" 2>&1 &
             local pid=$!
             
             # Tail the output file in real-time until the process completes
@@ -286,10 +274,9 @@ show_development_menu() {
     fi
     
     echo ""
-    gum style --foreground 40 --bold "Development installation complete!"
+    gum style --foreground 40 --bold "Development Tools installation complete!"
 }
 
-# Run the Language menu
+# Run the menus
 show_language_menu
-# Run the Development menu
 show_development_menu
