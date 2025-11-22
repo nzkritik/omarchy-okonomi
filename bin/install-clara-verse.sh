@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# Install Anaconda application
-yay -S --noconfirm --needed anaconda
+# Install Clara Verse
+yay -S --noconfirm --needed clara-verse
 # add any additional configuration steps below if needed
