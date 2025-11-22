@@ -40,7 +40,7 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
     - [X] Web Browsers  
     - [X] Creativity Apps  
     - [X] Torrent Apps  
-    - [ ] Development Apps  
+    - [X] Development Apps  
     - [ ] File Management Apps  
     - [ ] System Tools/Utilities  
     - [ ] System Tweaks  

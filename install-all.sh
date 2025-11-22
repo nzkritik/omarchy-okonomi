@@ -34,7 +34,7 @@ show_gum_menu() {
         "Install Web Browsers|Various web browsers|./bin/browsers.sh|false"
         "Install Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
         "Install Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
-        #"Install Development App and Languages|Programming languages and environments|./bin/development.sh|false"
+        "Install Development App and Languages|Programming languages and environments|./bin/development.sh|false"
         #"tmux|Terminal multiplexer|./bin/install-tmux.sh|false"
         #"stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
         "Bitwarden|Password manager|./bin/install-bitwarden.sh|false"

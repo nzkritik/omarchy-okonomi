@@ -15,19 +15,19 @@ fi
 show_language_menu() {
     # Define Development Language array with: name, description, install script, selected (true/false)
     declare -a languages=(
-        "Ruby on Rails|Web application framework written in Ruby|ruby|false"
-        "Node.js|JavaScript runtime environment|node|false"
+        "Ruby on Rails|Web application framework written in Ruby|ruby|false" #tested
+        "Node.js|JavaScript runtime environment|node|false" #tested
         "Python|High-level programming language|python|false"
         "Go|Statically typed, compiled programming language|go|false"
         "Laravel|PHP web application framework|laravel|false"
         "Symfony|PHP web application framework|symfony|false" 
         "Java|Popular programming language|java|false"
-        "Bun|All-in-one JavaScript runtime|bun|false"
+        "Bun|All-in-one JavaScript runtime|bun|false" #tested
         "Rust|Systems programming language focused on safety and performance|rust|false"
         "PHP|Popular general-purpose scripting language|php|false"
         "Elixir|Dynamic, functional language for building scalable applications|elixir|false"
         "Phoenix|Web development framework written in Elixir|phoenix|false"
-        "OCaml|General-purpose programming language with an emphasis on expressiveness and safety|ocaml|false"
+        "OCaml|General-purpose programming language with an emphasis on expressiveness and safety|ocaml|false" #failed -- error upstream
         "Clojure|Modern, dynamic, and functional dialect of Lisp on the JVM|clojure|false"  
         "Dotnet|Cross-platform framework for building applications|dotnet|false"
     )
@@ -152,8 +152,12 @@ show_development_menu() {
     # Define Development array with: name, description, install script, selected (true/false)
     declare -a developments=(
         "Visual Studio Code|Popular code editor by Microsoft|./bin/install-vscode.sh|false"
-        "Sublime Text|Lightweight and fast code editor|./bin/install-sublime-text.sh|false"
-        "Postman|API development and testing tool|./bin/install-postman.sh|false"
+        "Sublime Text|Lightweight and fast code editor|./bin/install-sublime-text.sh|false" #tested
+        "Postman|API development and testing tool|./bin/install-postman.sh|false" #tested
+        "PyCharm|Python IDE by JetBrains - Community Edition|./bin/install-pycharm.sh|false"
+        "IntelliJ IDEA|Java IDE by JetBrains|./bin/install-intellij-idea.sh|false"
+        "Android Studio|Official IDE for Android development|./bin/install-android-studio.sh|false"
+        "Anaconda|Python package and envoronment management|./bin/install-anaconda.sh|false"
     )
 
     # Build display options and keep track of mapping
