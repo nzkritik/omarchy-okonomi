@@ -8,6 +8,7 @@ cd ~
 # Check if the repository already exists
 if [ -d "$REPO_NAME" ]; then
   echo "Repository '$REPO_NAME' already exists. Updating clone"
+  cd "$REPO_NAME"
   git pull
 else
   git clone "$REPO_URL"
