@@ -12,9 +12,9 @@ if ! command -v gum &>/dev/null; then
 fi
 
 # Function to display ai-tool selection menu
-show_ai-tool_menu() {
+show_ai_tool_menu() {
     # Define ai-tool array with: name, description, install script, selected (true/false)
-    declare -a ai-tools=(
+    declare -a ai_tools=(
         "Upscayl|Free and Open Source AI Image Upscaler - GPU Required|./bin/install-upscayl.sh|false"
         "Ollama|Local LLMs on your machine - CPU/GPU Required|./bin/install-ollama.sh|false"
         "LM Studio|Local LLMs on your machine - CPU/GPU Required|./bin/install-lm-studio.sh|false"
@@ -25,14 +25,14 @@ show_ai-tool_menu() {
     )
 
     # Build display options and keep track of mapping
-    declare -A ai-tool_map=()
+    declare -A ai_tool_map=()
     declare -a display_options=()
     
-    for item in "${ai-tools[@]}"; do
+    for item in "${ai_tools[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        ai-tool_map["$display_key"]="$name|$desc|$script"
+        ai_tool_map["$display_key"]="$name|$desc|$script"
     done
 
     # Show ai-tool selection menu
@@ -46,13 +46,13 @@ show_ai-tool_menu() {
 
     # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
-        gum style --foreground 244 "No ai-tools selected."
-        exit 0
+        gum style --foreground 244 "No AI tools selected."
+        return 0
     fi
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected ai-tools..."
+    gum style --foreground 212 --bold "Installing selected AI tools..."
     echo ""
     
     # Track installation results
@@ -63,8 +63,8 @@ show_ai-tool_menu() {
     
     for selected_item in "${selected_array[@]}"; do
         # Get the ai-tool info from the map
-        if [[ -n "${ai-tool_map[$selected_item]:-}" ]]; then
-            IFS='|' read -r name desc script <<< "${ai-tool_map[$selected_item]}"
+        if [[ -n "${ai_tool_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${ai_tool_map[$selected_item]}"
             
             if [[ ! -x "$script" ]]; then
                 gum style --foreground 1 "✗ $script not found or not executable"
@@ -142,8 +142,8 @@ show_ai-tool_menu() {
     fi
     
     echo ""
-    gum style --foreground 40 --bold "ai-tool installation complete!"
+    gum style --foreground 40 --bold "AI tool installation complete!"
 }
 
 # Run the ai-tool menu
-show_ai-tool_menu
+show_ai_tool_menu
