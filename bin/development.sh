@@ -89,7 +89,7 @@ show_language_menu() {
             gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             
             # Run the installation script in background and tail output in real-time
-            "$script" > "$output_file" 2>&1 &
+            ./bin/install-dev-lang "$script" > "$output_file" 2>&1 &
             local pid=$!
             
             # Tail the output file in real-time until the process completes
@@ -225,7 +225,7 @@ show_development_menu() {
             gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             
             # Run the installation script in background and tail output in real-time
-            "$script" > "$output_file" 2>&1 &
+            ./bin/install-dev-lang "$script" > "$output_file" 2>&1 &
             local pid=$!
             
             # Tail the output file in real-time until the process completes
