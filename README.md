@@ -41,6 +41,7 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
     - [X] Creativity Apps  
     - [X] Torrent Apps  
     - [X] Development Apps  
+    - [X] AI Tools
     - [ ] File Management Apps  
     - [ ] System Tools/Utilities  
     - [ ] System Tweaks  
