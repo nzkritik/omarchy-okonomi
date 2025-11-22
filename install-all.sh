@@ -39,7 +39,6 @@ show_gum_menu() {
         #"stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
         "Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
         "KVM|Virtualization|./bin/install-kvm.sh|false"
-        "VS Code|Code editor|./bin/install-vscode.sh|false"
     )
 
     # Build display options and keep track of mapping

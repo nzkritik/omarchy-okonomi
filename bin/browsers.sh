@@ -15,11 +15,12 @@ fi
 show_browser_menu() {
     # Define browser array with: name, description, install script, selected (true/false)
     declare -a browsers=(
-        "Firefox|Open-source web browser by Mozilla|./bin/install-firefox.sh|false"
-        "Zen Browser|Privacy-focused Firefox fork|./bin/install-zen-browser.sh|false"
-        "Tor Browser|Anonymous web browsing over the Tor network|./bin/install-tor-browser.sh|false"
-        "Brave|Privacy-focused Chromium-based browser|./bin/install-brave.sh|false"
-        "Opera|Feature-rich Chromium-based browser|./bin/install-opera.sh|false"
+        "Firefox|Open-source web browser by Mozilla|./bin/install-firefox.sh|false" #tested
+        "Zen Browser|Privacy-focused Firefox fork|./bin/install-zen-browser.sh|false" #tested
+        "Tor Browser|Anonymous web browsing over the Tor network|./bin/install-tor-browser.sh|false" #tested
+        "Brave|Privacy-focused Chromium-based browser|./bin/install-brave.sh|false" #tested
+        "Opera|Feature-rich Chromium-based browser|./bin/install-opera.sh|false" #tested
+        #"Vivaldi|Highly customizable Chromium-based browser|./bin/install-vivaldi.sh|false"
     )
 
     # Build display options and keep track of mapping
