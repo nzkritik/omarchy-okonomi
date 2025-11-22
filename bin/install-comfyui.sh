@@ -14,7 +14,7 @@ fi
 # Ensure anaconda/conda is installed
 if ! command -v conda &>/dev/null; then
     gum style --foreground 1 "Error: Anaconda/Conda is not installed. Installing now..."
-    sudo pacman -S --noconfirm --needed anaconda || {
+    yay -S --noconfirm --needed anaconda|| {
         gum style --foreground 1 "Failed to install Anaconda/Conda. Please install it manually."
         exit 1
     }
