@@ -7,7 +7,8 @@ REPO_NAME="dotfiles"
 cd ~
 # Check if the repository already exists
 if [ -d "$REPO_NAME" ]; then
-  echo "Repository '$REPO_NAME' already exists. Skipping clone"
+  echo "Repository '$REPO_NAME' already exists. Updating clone"
+  git pull
 else
   git clone "$REPO_URL"
 fi
