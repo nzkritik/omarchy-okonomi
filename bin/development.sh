@@ -157,6 +157,7 @@ show_development_menu() {
         "PyCharm|Python IDE by JetBrains - Community Edition|./bin/install-pycharm.sh|false"
         "IntelliJ IDEA|Java IDE by JetBrains|./bin/install-intellij-idea.sh|false"
         "Android Studio|Official IDE for Android development|./bin/install-android-studio.sh|false"
+        "waydroid|Run Android apps on Linux|./bin/install-waydroid.sh|false"
         "Anaconda|Python package and envoronment management|./bin/install-anaconda.sh|false"
     )
 
