@@ -36,10 +36,7 @@ show_gum_menu() {
         "Install Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
         "Install Development App and Languages|Programming languages and environments|./bin/development.sh|false"
         "Install AI Tools|AI-powered applications and tools|./bin/ai-tools.sh|false"
-        #"tmux|Terminal multiplexer|./bin/install-tmux.sh|false"
-        #"stow|GNU Stow symlink manager|./bin/install-stow.sh|false"
-        #"Bitwarden|Password manager|./bin/install-bitwarden.sh|false"
-        #"KVM|Virtualization|./bin/install-kvm.sh|false"
+        "Install System Apps|System utilities and security tools|./bin/system.sh|false"
     )
 
     # Build display options and keep track of mapping

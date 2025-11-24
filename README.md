@@ -43,7 +43,7 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
     - [X] Development Apps  
     - [X] AI Tools
     - [ ] File Management Apps  
-    - [ ] System Tools/Utilities  
+    - [X] System Tools/Security/Utilities  
     - [ ] System Tweaks  
   - [X] provide options to install only certain categories of apps/configs  
 - [ ] Structure the install flow to allow for minimal changes or very  tweaked installs
