@@ -15,13 +15,13 @@ fi
 show_ai_tool_menu() {
     # Define ai-tool array with: name, description, install script, selected (true/false)
     declare -a ai_tools=(
-        "Upscayl|Free and Open Source AI Image Upscaler - GPU Required|./bin/install-upscayl.sh|false"
-        "Ollama|Local LLMs on your machine - CPU/GPU Required|./bin/install-ollama.sh|false"
-        "LM Studio|Local LLMs on your machine - CPU/GPU Required|./bin/install-lm-studio.sh|false"
+        "Upscayl|Free and Open Source AI Image Upscaler - GPU Required|./bin/install-upscayl.sh|false" #tested
+        "Ollama|Local LLMs on your machine - CPU/GPU Required|./bin/install-ollama.sh|false" #tested
+        "LM Studio|Local LLMs on your machine - CPU/GPU Required|./bin/install-lm-studio.sh|false" #tested
         "Open WebUI|Run LLMs with a web interface - CPU/GPU Required|./bin/install-open-webui.sh|false"
         "Automatic1111|Stable Diffusion Web Interface - GPU Required|./bin/install-automatic1111.sh|false"
         #"ComfyUI|Stable Diffusion Web Interface - GPU Required|./bin/install-comfyui.sh|false"
-        "Clara Verse|AI Image Generation Tool - GPU Required|./bin/install-clara-verse.sh|false"
+        "Clara Verse|AI Image Generation Tool - GPU Required|./bin/install-clara-verse.sh|false" #tested
     )
 
     # Build display options and keep track of mapping
