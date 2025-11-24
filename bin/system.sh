@@ -15,11 +15,11 @@ fi
 show_system_menu() {
     # Define system array with: name, description, install script, selected (true/false)
     declare -a systems=(
-        "Bitwarden|Open-source password manager|./bin/systems/install-bitwarden.sh|false"
-        "KVM|Virtualization solution for Linux|./bin/systems/install-kvm.sh|false"
-        "tmux|Terminal multiplexer|./bin/systems/install-tmux.sh|false"
-        "stow|GNU Stow symlink manager|./bin/systems/install-stow.sh|false"
-        "Screensavers|Add an additional screensaver|./bin/systems/install-screensavers.sh|false"
+        "Bitwarden|Open-source password manager|./bin/system/install-bitwarden.sh|false"
+        "KVM|Virtualization solution for Linux|./bin/system/install-kvm.sh|false"
+        "tmux|Terminal multiplexer|./bin/system/install-tmux.sh|false"
+        "stow|GNU Stow symlink manager|./bin/system/install-stow.sh|false"
+        "Screensavers|Add an additional screensaver|./bin/system/install-screensavers.sh|false"
     )
 
     # Build display options and keep track of mapping
