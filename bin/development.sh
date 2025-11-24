@@ -151,14 +151,14 @@ show_language_menu() {
 show_development_menu() {
     # Define Development array with: name, description, install script, selected (true/false)
     declare -a developments=(
-        "Visual Studio Code|Popular code editor by Microsoft|./bin/install-vscode.sh|false"
-        "Sublime Text|Lightweight and fast code editor|./bin/install-sublime-text.sh|false" #tested
-        "Postman|API development and testing tool|./bin/install-postman.sh|false" #tested
-        "PyCharm|Python IDE by JetBrains - Community Edition|./bin/install-pycharm.sh|false"
-        "IntelliJ IDEA|Java IDE by JetBrains|./bin/install-intellij-idea.sh|false"
-        "Android Studio|Official IDE for Android development|./bin/install-android-studio.sh|false"
-        "Waydroid|Run Android apps on Linux|./bin/install-waydroid.sh|false"
-        "Anaconda|Python package and envoronment management|./bin/install-anaconda.sh|false"
+        "Visual Studio Code|Popular code editor by Microsoft|./bin/development/install-vscode.sh|false"
+        "Sublime Text|Lightweight and fast code editor|./bin/development/install-sublime-text.sh|false" #tested
+        "Postman|API development and testing tool|./bin/development/install-postman.sh|false" #tested
+        "PyCharm|Python IDE by JetBrains - Community Edition|./bin/development/install-pycharm.sh|false"
+        "IntelliJ IDEA|Java IDE by JetBrains|./bin/development/install-intellij-idea.sh|false"
+        "Android Studio|Official IDE for Android development|./bin/development/install-android-studio.sh|false"
+        "Waydroid|Run Android apps on Linux|./bin/development/install-waydroid.sh|false"
+        "Anaconda|Python package and envoronment management|./bin/development/install-anaconda.sh|false"
     )
 
     # Build display options and keep track of mapping

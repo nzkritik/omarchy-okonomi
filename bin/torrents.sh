@@ -15,11 +15,11 @@ fi
 show_torrent_menu() {
     # Define torrent array with: name, description, install script, selected (true/false)
     declare -a torrents=(
-        "Transmission|Lightweight torrent client|./bin/install-transmission.sh|false"
-        "Deluge|Feature-rich torrent client|./bin/install-deluge.sh|false"
-        "qBittorrent|Cross-platform torrent client|./bin/install-qbittorrent.sh|false"
-        "Tixati|Proprietary torrent client|./bin/install-tixati.sh|false"
-        "Rtorrent|Command-line torrent client|./bin/install-rtorrent.sh|false"
+        "Transmission|Lightweight torrent client|./bin/torrents/install-transmission.sh|false"
+        "Deluge|Feature-rich torrent client|./bin/torrents/install-deluge.sh|false"
+        "qBittorrent|Cross-platform torrent client|./bin/torrents/install-qbittorrent.sh|false"
+        "Tixati|Proprietary torrent client|./bin/torrents/install-tixati.sh|false"
+        "Rtorrent|Command-line torrent client|./bin/torrents/install-rtorrent.sh|false"
     )
 
     # Build display options and keep track of mapping

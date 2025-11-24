@@ -15,19 +15,19 @@ fi
 show_creativity_menu() {
     # Define creativity array with: name, description, install script, selected (true/false)
     declare -a creativity=(
-        "DisplayCAL|Open Source Display Calibration and Characterization|./bin/install-displaycal.sh|false" #tested
-        "Rapid Photo|Rapid Photo Downloader for photographers|./bin/install-rapid-photo.sh|false" #tested
-        "Digikam|An advanced digital photo management application|./bin/install-digikam.sh|false" #tested
-        "Darktable|Utility to organize and develop raw images|./bin/install-darktable.sh|false" #tested
-        "GIMP|GNU Image Manipulation Program|./bin/install-gimp.sh|false" #tested
-        "Inkscape|Vector graphics editor|./bin/install-inkscape.sh|false" #tested
-        "Krita|Professional free and open source painting program|./bin/install-krita.sh|false" #tested
-        "Blender|3D creation suite|./bin/install-blender.sh|false" #tested
-        "Audacity|Free, open source, cross-platform audio software|./bin/install-audacity.sh|false" #tested
-        "DaVinci Resolve|Professional video editing software - GPU Required|./bin/install-davinci-resolve.sh|false"
-        "WinFF|GUI for ffmpeg for video format conversion|./bin/install-winff.sh|false" #tested
-        "Scribus|Desktop publishing application|./bin/install-scribus.sh|false" #tested
-        "Upscayl|Free and Open Source AI Image Upscaler - GPU Required|./bin/install-upscayl.sh|false"
+        "DisplayCAL|Open Source Display Calibration and Characterization|./bin/creativity/install-displaycal.sh|false" #tested
+        "Rapid Photo|Rapid Photo Downloader for photographers|./bin/creativity/install-rapid-photo.sh|false" #tested
+        "Digikam|An advanced digital photo management application|./bin/creativity/install-digikam.sh|false" #tested
+        "Darktable|Utility to organize and develop raw images|./bin/creativity/install-darktable.sh|false" #tested
+        "GIMP|GNU Image Manipulation Program|./bin/creativity/install-gimp.sh|false" #tested
+        "Inkscape|Vector graphics editor|./bin/creativity/install-inkscape.sh|false" #tested
+        "Krita|Professional free and open source painting program|./bin/creativity/install-krita.sh|false" #tested
+        "Blender|3D creation suite|./bin/creativity/install-blender.sh|false" #tested
+        "Audacity|Free, open source, cross-platform audio software|./bin/creativity/install-audacity.sh|false" #tested
+        "DaVinci Resolve|Professional video editing software - GPU Required|./bin/creativity/install-davinci-resolve.sh|false"
+        "WinFF|GUI for ffmpeg for video format conversion|./bin/creativity/install-winff.sh|false" #tested
+        "Scribus|Desktop publishing application|./bin/creativity/install-scribus.sh|false" #tested
+        "Upscayl|Free and Open Source AI Image Upscaler - GPU Required|./bin/aitools/install-upscayl.sh|false"
     )
 
     # Build display options and keep track of mapping
