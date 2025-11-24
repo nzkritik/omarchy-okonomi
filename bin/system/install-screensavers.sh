@@ -17,7 +17,7 @@ show_screensaver_menu() {
     declare -a screensavers=(
         "cmatrix|Terminal Matrix screensaver|./bin/system/install-cmatrix.sh|false"
         "Neo Matrix|Futuristic Matrix-style screensaver|./bin/system/install-neo-matrix.sh|false"
-        "sysc-wall|Text based screensaver|./bin/system/install-sysc-wall.sh|false" #tested
+        "sysc-wall|Text based screensaver|./bin/system/install-sysc-walls.sh|false" #tested
     )
 
     # Build display options and keep track of mapping
