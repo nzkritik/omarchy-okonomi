@@ -8,7 +8,8 @@ if ! command -v gum &>/dev/null; then
 fi
 
 # Install neo-matrix
-echo "Installing neo-matrix..."
+gum style --foreground 212 --bold "Installing neo-matrix..."
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 yay -S --noconfirm --needed neo-matrix
 
 # Verify installation
@@ -39,7 +40,7 @@ if gum confirm --default=false "Do you want neo-matrix as your default screensav
       # - `^\s*` matches the start of line with any leading whitespace
       # - `-e\s\+omarchy-cmd-screensaver` matches the exact command
       # - `$` anchors to end of line
-      sed -i 's/^\s*-e\s\+omarchy-cmd-screensaver$/    -e neo-matrix -async --shadingmode=1 --defaultbg --colormode=16/g' "$SCREENSAVER_SCRIPT"
+      sed -i 's/^\s*-e\s\+omarchy-cmd-screensaver$/    -e neo-matrix --async --shadingmode=1 --defaultbg --colormode=16/g' "$SCREENSAVER_SCRIPT"
       
       gum style --foreground 40 "✓ Set neo-matrix as default screensaver in omarchy-launch-screensaver."
       gum style --foreground 40 "  (Replaced $count instance(s))"
@@ -51,6 +52,7 @@ if gum confirm --default=false "Do you want neo-matrix as your default screensav
   fi
 else
   gum style --foreground 244 "Neo-matrix installed, but not set as the default screensaver."
+  gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 fi
 
 echo ""

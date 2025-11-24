@@ -143,3 +143,4 @@ show_screensaver_menu() {
 
 # Run the screensaver menu
 show_screensaver_menu
+echo ""

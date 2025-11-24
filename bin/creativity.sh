@@ -153,3 +153,4 @@ show_creativity_menu() {
 
 # Run the creativity menu
 show_creativity_menu
+echo ""
