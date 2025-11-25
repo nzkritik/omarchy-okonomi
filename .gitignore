@@ -1,0 +1,11 @@
+# ignore specific files
+scripts/install-dotfiles.sh
+scripts/hyprland-overrides.conf
+scripts/install-hyprland-overrides.sh
+scripts/system-tweaks.sh
+
+# Ignore all files with a certain extension
+# *.log
+
+# Ignore a directory
+# temp_files/

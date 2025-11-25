@@ -20,6 +20,11 @@ show_system_menu() {
         "tmux|Terminal multiplexer|./bin/system/install-tmux.sh|false"
         "stow|GNU Stow symlink manager|./bin/system/install-stow.sh|false"
         "Screensavers|Add an additional screensaver|./bin/system/install-screensavers.sh|false"
+        "tor browser|Anonymous web browsing over the Tor network|./bin/browsers/install-tor-browser.sh|false"
+        "BleachBit|System cleaner and privacy manager|./bin/system/install-bleachbit.sh|false"
+        "ecryptfs|Filesystem-level encryption tool|./bin/system/install-encryptfs.sh|false"
+        "gocryptfs|User-space encrypted overlay filesystem|./bin/system/install-gocryptfs.sh|false"
+        "Veracrypt|Disk encryption software|./bin/system/install-veracrypt.sh|false"
     )
 
     # Build display options and keep track of mapping
