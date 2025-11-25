@@ -13,6 +13,8 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
 
 ---  
 
+![Omarchy-Okonomi Logo](./assets/screenshot.png)
+
 ### Key Justifications:
 * I'm not a developer, so some of Omarchy's default applications I don't use day to day
 * I like the idea of installing a setup Arch system, but want my defaults applied post-install
@@ -30,6 +32,7 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
 * (Optional) Review the files and make changes to suit your needs
 * Run the install script   
 ```./install-all.sh```  
+* Select the options you want and let the system install then for you
 * Reboot your system and enjoy
 
 ### ToDo list:
