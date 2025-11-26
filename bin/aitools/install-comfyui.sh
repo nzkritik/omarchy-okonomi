@@ -206,13 +206,41 @@ if ! run_install_step "Creating conda environment" "conda create -n comfyenv pyt
 fi
 echo ""
 
-# Clone repository
-cd ~
-if ! run_install_step "Cloning ComfyUI repository" "git clone https://github.com/comfyanonymous/ComfyUI.git"; then
-    exit 1
+# Check if ComfyUI directory exists
+gum style --foreground 212 --bold "→ Checking ComfyUI Repository"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [[ -d "$HOME/ComfyUI" ]]; then
+    gum style "ComfyUI directory found at: $HOME/ComfyUI"
+    if run_install_step "Updating ComfyUI repository" "cd $HOME/ComfyUI && git pull"; then
+        echo ""
+        gum style --foreground 40 "✓ ComfyUI repository updated successfully"
+    else
+        gum style --foreground 1 --bold "✗ Failed to update ComfyUI repository"
+        exit 1
+    fi
+else
+    gum style "ComfyUI directory not found. Cloning repository..."
+    if ! run_install_step "Cloning ComfyUI repository" "git clone https://github.com/comfyanonymous/ComfyUI.git $HOME/ComfyUI"; then
+        exit 1
+    fi
 fi
 echo ""
-mkdir "$HOME/ComfyUI/tmp"
+
+# Create temporary directory for ComfyUI
+if [[ -d "$HOME/ComfyUI/tmp" ]]; then
+    gum style --foreground 212 --bold "→ Setting up temporary directory"
+    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    gum style --foreground 244 "⚠ Temporary directory already exists at: $HOME/ComfyUI/tmp"
+else
+    gum style --foreground 212 --bold "→ Setting up temporary directory"
+    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    mkdir "$HOME/ComfyUI/tmp"
+    gum style --foreground 40 "✓ Temporary directory created at: $HOME/ComfyUI/tmp"
+fi
+echo ""
+
+# Set TMPDIR environment variable for ComfyUI
 export TMPDIR="$HOME/ComfyUI/tmp"
 
 # Step 4: Install GPU dependencies
