@@ -181,10 +181,12 @@ else
 fi
 echo ""
 
+
 # Source conda initialization
-if ! run_install_step "Sourcing conda initialization" "source $HOME/.bashrc"; then
-    exit 1
-fi
+source $HOME/.bashrc
+echo ""
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 echo ""
 
 # Create conda environment
