@@ -197,8 +197,11 @@ fi
 echo ""
 
 # Source conda initialization
-gum spin --spinner dot --title "Sourcing conda initialization..." -- sleep 5
+gum spin --spinner dot --title "Sourcing conda initialization..." -- sleep 3
 source "$HOME/.bashrc"
+gum spin --spinner dot --title "Done" -- sleep 2
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 echo ""
 
 # Create conda environment
