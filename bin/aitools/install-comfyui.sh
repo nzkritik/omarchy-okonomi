@@ -252,7 +252,12 @@ export TMPDIR="$HOME/ComfyUI/tmp"
 
 # Activate comfyenv environment
 gum spin --spinner dot --title "Activating comfyenv conda environment..." -- sleep 3
-conda init && source "$HOME/.bashrc" && conda activate comfyenv
+conda init
+source "$HOME/.bashrc"
+conda activate comfyenv
+pip install pyyaml
+cd $HOME/ComfyUI
+pip install -r requirements.txt
 gum spin --spinner dot --title "Done" -- sleep 2
 echo ""
 
