@@ -178,7 +178,7 @@ gum style --foreground 212 --bold "Step 3/5: Setup Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Initialize conda for bash
-if ! run_install_step "Initializing conda for bash" "conda init bash"; then
+if ! run_install_step "Initializing conda for bash" "/opt/miniconda3/bin/conda init bash"; then
     exit 1
 fi
 echo ""
