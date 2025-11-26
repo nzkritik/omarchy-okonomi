@@ -212,6 +212,8 @@ if ! run_install_step "Cloning ComfyUI repository" "git clone https://github.com
     exit 1
 fi
 echo ""
+mkdir "$HOME/ComfyUI/tmp"
+export TMPDIR="$HOME/ComfyUI/tmp"
 
 # Step 4: Install GPU dependencies
 gum style --foreground 212 --bold "Step 4/5: Installing GPU Dependencies"
@@ -237,7 +239,7 @@ esac
 echo ""
 
 # Install ComfyUI dependencies
-if ! run_install_step "Installing ComfyUI dependencies" "cd ~/ComfyUI && pip install --no-cache-dir -r requirements.txt"; then
+if ! run_install_step "Installing ComfyUI dependencies" "cd ~/ComfyUI && pip install -r requirements.txt"; then
     exit 1
 fi
 echo ""
