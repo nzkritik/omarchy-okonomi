@@ -247,6 +247,24 @@ echo ""
 # Set TMPDIR environment variable for ComfyUI
 export TMPDIR="$HOME/ComfyUI/tmp"
 
+# Activate comfyenv environment
+gum spin --spinner dot --title "Activating comfyenv conda environment..." -- sleep 3
+conda activate comfyenv
+gum spin --spinner dot --title "Done" -- sleep 2
+echo ""
+
+# install required packages
+cd $HOMNE/ComfyUI
+gum style --foreground 212 --bold "Installing required Python packages"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+pip install --upgrade pip setuptools wheel
+echo "" 
+gum style --foreground 40 "✓ pip, setuptools, and wheel upgraded"
+echo ""
+pip install -r requirements.txt
+gum style --foreground 40 "✓ Required Python packages installed"
+echo ""
+
 # Step 4: Install GPU dependencies
 gum style --foreground 212 --bold "Step 4/5: Installing GPU Dependencies"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -268,12 +286,6 @@ case "$gpu_type" in
         fi
         ;;
 esac
-echo ""
-
-# Install ComfyUI dependencies
-if ! run_install_step "Installing ComfyUI dependencies" "cd ~/ComfyUI && pip install -r requirements.txt"; then
-    exit 1
-fi
 echo ""
 
 # Step 5: Setup desktop integration
