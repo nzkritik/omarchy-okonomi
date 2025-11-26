@@ -173,10 +173,6 @@ gum style --foreground 212 --bold "Step 2/5: Check Dependencies"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 ensure_conda
 
-# Step 3: Create virtual environment and clone repo
-gum style --foreground 212 --bold "Step 3/5: Setup Virtual Environment"
-gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
 # Initialize conda for bash
 if ! run_install_step "Initializing conda for bash" "/opt/miniconda3/bin/conda init bash"; then
     exit 1
@@ -203,6 +199,10 @@ gum spin --spinner dot --title "Done" -- sleep 2
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 echo ""
+
+# Step 3: Create virtual environment and clone repo
+gum style --foreground 212 --bold "Step 3/5: Setup Virtual Environment"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Create conda environment
 gum style --foreground 212 --bold "→ Creating comfyenv conda environment"
