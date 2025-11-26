@@ -20,7 +20,7 @@ show_ai_tool_menu() {
         "LM Studio|Local LLMs on your machine - CPU/GPU Required|./bin/aitools/install-lm-studio.sh|false" #tested
         "Open WebUI|Run LLMs with a web interface - CPU/GPU Required|./bin/aitools/install-open-webui.sh|false" #tested
         "Automatic1111|Stable Diffusion Web Interface - GPU Required|./bin/aitools/install-automatic1111.sh|false" #tested
-        #"ComfyUI|Stable Diffusion Web Interface - GPU Required|./bin/install-comfyui.sh|false"
+        "ComfyUI|Stable Diffusion Web Interface - GPU Required|./bin/aitools/install-comfyui.sh|false"
         "Clara Verse|AI Image Generation Tool - GPU Required|./bin/aitools/install-clara-verse.sh|false" #tested
     )
 
