@@ -197,7 +197,7 @@ fi
 echo ""
 
 # Source conda initialization
-gum spin --spinner dots --title "Sourcing conda initialization..." -- sleep 5
+gum spin --spinner dot --title "Sourcing conda initialization..." -- sleep 5
 source "$HOME/.bashrc"
 echo ""
 
