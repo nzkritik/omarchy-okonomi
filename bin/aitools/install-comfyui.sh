@@ -165,7 +165,7 @@ gum style --foreground 242 "━━━━━━━━━━━━━━━━━�
 
 if ! command -v python3.12 &>/dev/null; then
     gum style "Python 3.12 not found. Installing..."
-    if ! run_install_step "Installing Python 3.12" "sudo pacman -S --noconfirm --needed python312"; then
+    if ! run_install_step "Installing Python 3.12" "yay -S --noconfirm --needed python312"; then
         exit 1
     fi
 else
