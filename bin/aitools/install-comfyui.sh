@@ -168,6 +168,19 @@ if ! run_install_step "Initializing conda for bash" "cd /opt/miniconda3/bin && .
 fi
 echo ""
 
+# Add TERMINFO environment variable to ~/.bashrc
+if ! grep -q "export TERMINFO=" "$HOME/.bashrc"; then
+    gum style --foreground 212 --bold "→ Configuring TERMINFO environment variable"
+    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo 'export TERMINFO="/usr/share/terminfo"' >> "$HOME/.bashrc"
+    gum style --foreground 40 "✓ TERMINFO environment variable added to ~/.bashrc"
+else
+    gum style --foreground 212 --bold "→ Configuring TERMINFO environment variable"
+    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    gum style --foreground 244 "⚠ TERMINFO environment variable already exists in ~/.bashrc"
+fi
+echo ""
+
 # Source conda initialization
 if ! run_install_step "Sourcing conda initialization" "source $HOME/.bashrc"; then
     exit 1
