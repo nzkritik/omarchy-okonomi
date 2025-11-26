@@ -105,18 +105,14 @@ detect_gpu_hardware() {
         done
         echo ""
     fi
-    
-    # Return GPU type for selection
-    # if [[ ${#nvidia_gpus[@]} -gt 0 ]]; then
-    #     echo "NVIDIA"
-    # elif [[ ${#amd_gpus[@]} -gt 0 ]]; then
-    #     echo "AMD"
-    # elif [[ ${#apple_gpus[@]} -gt 0 ]]; then
-    #     echo "APPLE"
-    # else
-    #     echo "NONE"
-    # fi
-}
+    if [[ ${#nvidia_gpus[@]} -eq 0 && ${#amd_gpus[@]} -eq 0 && ${#apple_gpus[@]} -eq 0 ]]; then
+        gum style --foreground 1 --bold "✗ No compatible GPU detected!"
+        gum style --foreground 242 "ComfyUI requires NVIDIA, AMD, or Apple Silicon GPU."
+        echo ""
+        echo "Detected GPU Summary: NONE"
+        echo ""
+        return 1
+    fi
 
 # Function to select GPU
 select_gpu() {
@@ -131,24 +127,7 @@ select_gpu() {
     gum style --foreground 212 --bold "→ GPU Selection"
     gum style "Please select the primary GPU for ComfyUI:"
     echo ""
-    
-    # Create GPU options based on detected types
-    # local gpu_options=()
-    
-    # if lspci 2>/dev/null | grep -qi "nvidia\|geforce\|tesla"; then
-    #     gpu_options+=("NVIDIA")
-    # fi
-    
-    # if lspci 2>/dev/null | grep -qi "amd\|radeon"; then
-    #     gpu_options+=("AMD")
-    # fi
-    
-    # if [[ $(uname -m) == "arm64" ]]; then
-    #     gpu_options+=("Apple Silicon")
-    # fi
-    
-    # local selected=$(gum choose "${gpu_options[@]}")
-    local selected=$(gum choose --limit 1 "NVIDIA" "AMD" "Apple Silicon") # Removed None option to force selection
+    local selected=$(gum choose --limit 1 "NVIDIA" "AMD" "APPLE" "NONE")
     echo "$selected"
 }
 
@@ -253,7 +232,7 @@ case "$selected_gpu" in
             exit 1
         fi
         ;;
-    "Apple Silicon")
+    "APPLE")
         if ! run_install_step "Installing ComfyUI for Apple Silicon" "$HOME/comfyenv/bin/comfy install --m-series"; then
             exit 1
         fi
