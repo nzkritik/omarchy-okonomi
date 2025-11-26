@@ -22,23 +22,37 @@ detect_gpu() {
     local amd_gpus=()
     local apple_gpus=()
     
-    # Check for NVIDIA GPUs
+    # Check for NVIDIA GPUs using nvidia-smi
     if command -v nvidia-smi &>/dev/null; then
-        # Get discrete NVIDIA GPUs
         nvidia_gpus=($(nvidia-smi --query-gpu=index,name --format=csv,noheader 2>/dev/null | grep -v "Integrated" | awk '{print $1}'))
         if [[ ${#nvidia_gpus[@]} -eq 0 ]]; then
             nvidia_gpus=($(nvidia-smi --query-gpu=index,name --format=csv,noheader 2>/dev/null | awk '{print $1}'))
         fi
     fi
     
-    # Check for AMD GPUs
+    # Check for AMD GPUs using rocm-smi
     if command -v rocm-smi &>/dev/null; then
         amd_gpus=($(rocm-smi --showproductname 2>/dev/null | grep -v "GPU" | awk '{print NR-1}'))
     fi
     
-    # Check for Apple Silicon
+    # Fallback: Check for Apple Silicon
     if [[ $(uname -m) == "arm64" ]]; then
         apple_gpus=("Apple Silicon")
+    fi
+    
+    # If no specific tools found, use lspci as fallback
+    if [[ ${#nvidia_gpus[@]} -eq 0 && ${#amd_gpus[@]} -eq 0 && ${#apple_gpus[@]} -eq 0 ]]; then
+        if command -v lspci &>/dev/null; then
+            # Check for NVIDIA GPUs via lspci
+            if lspci | grep -qi "nvidia\|geforce\|tesla"; then
+                nvidia_gpus=("0")
+            fi
+            
+            # Check for AMD GPUs via lspci
+            if lspci | grep -qi "amd\|radeon"; then
+                amd_gpus=("0")
+            fi
+        fi
     fi
     
     # Return results
@@ -151,6 +165,7 @@ gpu_info=$(detect_gpu)
 selected_gpu=$(select_gpu "$gpu_info")
 gpu_type="${selected_gpu%%:*}"
 gpu_device="${selected_gpu#*:}"
+gum style --foreground 40 "✓ Selected GPU: $gpu_type ($gpu_device)"
 echo ""
 
 # Step 2: Ensure conda is installed
@@ -163,7 +178,7 @@ gum style --foreground 212 --bold "Step 3/5: Setup Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Initialize conda for bash
-if ! run_install_step "Initializing conda for bash" "cd /opt/miniconda3/bin && ./conda init bash"; then
+if ! run_install_step "Initializing conda for bash" "conda init bash"; then
     exit 1
 fi
 echo ""
@@ -181,12 +196,8 @@ else
 fi
 echo ""
 
-
 # Source conda initialization
-source $HOME/.bashrc
-echo ""
-conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
-conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+source "$HOME/.bashrc"
 echo ""
 
 # Create conda environment
