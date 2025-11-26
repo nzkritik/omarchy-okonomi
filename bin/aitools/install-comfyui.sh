@@ -66,11 +66,11 @@ detect_gpu_hardware() {
     if command -v lspci &>/dev/null; then
         while IFS= read -r line; do
             nvidia_gpus+=("$line")
-        done < <(lspci | grep -i "nvidia\|geforce\|tesla" | cut -d: -f3-)
+        done < <(lspci | grep -i "vga\|3d\|display" | grep -i "nvidia\|geforce\|tesla" | cut -d: -f3-)
         
         while IFS= read -r line; do
             amd_gpus+=("$line")
-        done < <(lspci | grep -i "amd\|radeon" | cut -d: -f3-)
+        done < <(lspci | grep -i "vga\|3d\|display" | grep -i "amd\|radeon" | cut -d: -f3-)
     fi
     
     # Check for Apple Silicon
@@ -107,15 +107,15 @@ detect_gpu_hardware() {
     fi
     
     # Return GPU type for selection
-    if [[ ${#nvidia_gpus[@]} -gt 0 ]]; then
-        echo "NVIDIA"
-    elif [[ ${#amd_gpus[@]} -gt 0 ]]; then
-        echo "AMD"
-    elif [[ ${#apple_gpus[@]} -gt 0 ]]; then
-        echo "APPLE"
-    else
-        echo "NONE"
-    fi
+    # if [[ ${#nvidia_gpus[@]} -gt 0 ]]; then
+    #     echo "NVIDIA"
+    # elif [[ ${#amd_gpus[@]} -gt 0 ]]; then
+    #     echo "AMD"
+    # elif [[ ${#apple_gpus[@]} -gt 0 ]]; then
+    #     echo "APPLE"
+    # else
+    #     echo "NONE"
+    # fi
 }
 
 # Function to select GPU
@@ -133,21 +133,22 @@ select_gpu() {
     echo ""
     
     # Create GPU options based on detected types
-    local gpu_options=()
+    # local gpu_options=()
     
-    if lspci 2>/dev/null | grep -qi "nvidia\|geforce\|tesla"; then
-        gpu_options+=("NVIDIA")
-    fi
+    # if lspci 2>/dev/null | grep -qi "nvidia\|geforce\|tesla"; then
+    #     gpu_options+=("NVIDIA")
+    # fi
     
-    if lspci 2>/dev/null | grep -qi "amd\|radeon"; then
-        gpu_options+=("AMD")
-    fi
+    # if lspci 2>/dev/null | grep -qi "amd\|radeon"; then
+    #     gpu_options+=("AMD")
+    # fi
     
-    if [[ $(uname -m) == "arm64" ]]; then
-        gpu_options+=("Apple Silicon")
-    fi
+    # if [[ $(uname -m) == "arm64" ]]; then
+    #     gpu_options+=("Apple Silicon")
+    # fi
     
-    local selected=$(gum choose "${gpu_options[@]}")
+    # local selected=$(gum choose "${gpu_options[@]}")
+    local selected=$(gum choose --limit 1 "NVIDIA" "AMD" "Apple Silicon") # Removed None option to force selection
     echo "$selected"
 }
 
@@ -222,12 +223,17 @@ echo ""
 
 # Step 6: Detect GPU hardware
 gum style --foreground 212 --bold "Step 6/9: GPU Hardware Detection"
-detected_gpu=$(detect_gpu_hardware)
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+#detected_gpu=$(detect_gpu_hardware)
+detect_gpu_hardware
+#gum style --foreground 40 "✓ GPU detection => $detected_gpu"
 echo ""
 
 # Step 7: Select GPU
 gum style --foreground 212 --bold "Step 7/9: Select Primary GPU"
-selected_gpu=$(select_gpu "$detected_gpu")
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+#selected_gpu=$(select_gpu "$detected_gpu")
+selected_gpu=$(select_gpu "NVIDIA, AMD, APPLE, NONE")
 echo ""
 gum style --foreground 40 "✓ Selected GPU: $selected_gpu"
 echo ""
