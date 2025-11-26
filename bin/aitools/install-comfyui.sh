@@ -113,6 +113,7 @@ detect_gpu_hardware() {
         echo ""
         return 1
     fi
+}
 
 # Function to select GPU
 select_gpu() {
