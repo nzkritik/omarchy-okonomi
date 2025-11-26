@@ -162,6 +162,18 @@ ensure_conda
 gum style --foreground 212 --bold "Step 3/5: Setup Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+# Initialize conda for bash
+if ! run_install_step "Initializing conda for bash" "cd /opt/miniconda3/bin && ./conda init bash"; then
+    exit 1
+fi
+echo ""
+
+# Source conda initialization
+if ! run_install_step "Sourcing conda initialization" "source $HOME/.bashrc"; then
+    exit 1
+fi
+echo ""
+
 # Create conda environment
 if ! run_install_step "Creating conda environment" "conda create -n comfyenv python=3.12 -y"; then
     exit 1
