@@ -237,7 +237,7 @@ esac
 echo ""
 
 # Install ComfyUI dependencies
-if ! run_install_step "Installing ComfyUI dependencies" "cd ~/ComfyUI && pip install -r requirements.txt"; then
+if ! run_install_step "Installing ComfyUI dependencies" "cd ~/ComfyUI && pip install --no-cache-dir -r requirements.txt"; then
     exit 1
 fi
 echo ""
