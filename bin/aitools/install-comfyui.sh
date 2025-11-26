@@ -205,9 +205,12 @@ conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 echo ""
 
 # Create conda environment
-if ! run_install_step "Creating conda environment" "conda create -n comfyenv python=3.12 -y"; then
-    exit 1
+gum style --foreground 212 --bold "→ Creating comfyenv conda environment"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+if ! conda info --envs | grep -q "comfyenv"; then
+    conda create -n comfyenv python=3.12 -y
 fi
+gum style --foreground 40 "✓ comfyenv conda environment is ready"
 echo ""
 
 # Check if ComfyUI directory exists
