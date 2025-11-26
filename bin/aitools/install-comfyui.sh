@@ -252,12 +252,12 @@ export TMPDIR="$HOME/ComfyUI/tmp"
 
 # Activate comfyenv environment
 gum spin --spinner dot --title "Activating comfyenv conda environment..." -- sleep 3
-conda activate comfyenv
+conda init && source "$HOME/.bashrc" && conda activate comfyenv
 gum spin --spinner dot --title "Done" -- sleep 2
 echo ""
 
 # install required packages
-cd $HOMNE/ComfyUI
+cd $HOME/ComfyUI
 gum style --foreground 212 --bold "Installing required Python packages"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 pip install --upgrade pip setuptools wheel
