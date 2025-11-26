@@ -16,101 +16,7 @@ if ! command -v gum &>/dev/null; then
     }
 fi
 
-# Function to detect GPU
-detect_gpu() {
-    local nvidia_gpus=()
-    local amd_gpus=()
-    local apple_gpus=()
-    
-    # Check for NVIDIA GPUs using nvidia-smi
-    if command -v nvidia-smi &>/dev/null; then
-        nvidia_gpus=($(nvidia-smi --query-gpu=index,name --format=csv,noheader 2>/dev/null | grep -v "Integrated" | awk '{print $1}'))
-        if [[ ${#nvidia_gpus[@]} -eq 0 ]]; then
-            nvidia_gpus=($(nvidia-smi --query-gpu=index,name --format=csv,noheader 2>/dev/null | awk '{print $1}'))
-        fi
-    fi
-    
-    # Check for AMD GPUs using rocm-smi
-    if command -v rocm-smi &>/dev/null; then
-        amd_gpus=($(rocm-smi --showproductname 2>/dev/null | grep -v "GPU" | awk '{print NR-1}'))
-    fi
-    
-    # Fallback: Check for Apple Silicon
-    if [[ $(uname -m) == "arm64" ]]; then
-        apple_gpus=("Apple Silicon")
-    fi
-    
-    # If no specific tools found, use lspci as fallback
-    if [[ ${#nvidia_gpus[@]} -eq 0 && ${#amd_gpus[@]} -eq 0 && ${#apple_gpus[@]} -eq 0 ]]; then
-        if command -v lspci &>/dev/null; then
-            # Check for NVIDIA GPUs via lspci
-            if lspci | grep -qi "nvidia\|geforce\|tesla"; then
-                nvidia_gpus=("0")
-            fi
-            
-            # Check for AMD GPUs via lspci
-            if lspci | grep -qi "amd\|radeon"; then
-                amd_gpus=("0")
-            fi
-        fi
-    fi
-    
-    # Return results
-    if [[ ${#nvidia_gpus[@]} -gt 0 ]]; then
-        echo "NVIDIA:${nvidia_gpus[*]}"
-    elif [[ ${#amd_gpus[@]} -gt 0 ]]; then
-        echo "AMD:${amd_gpus[*]}"
-    elif [[ ${#apple_gpus[@]} -gt 0 ]]; then
-        echo "APPLE:${apple_gpus[*]}"
-    else
-        echo "NONE"
-    fi
-}
-
-# Function to select GPU
-select_gpu() {
-    local gpu_info="$1"
-    local gpu_type="${gpu_info%%:*}"
-    local gpu_list="${gpu_info#*:}"
-    
-    if [[ "$gpu_type" == "NONE" ]]; then
-        gum style --foreground 1 --bold "✗ No compatible GPU found!"
-        gum style --foreground 242 "ComfyUI requires NVIDIA, AMD, or Apple Silicon GPU."
-        exit 1
-    fi
-    
-    gum style --foreground 212 --bold "→ GPU Detection"
-    gum style "Detected GPU: $gpu_type"
-    echo ""
-    
-    # If multiple discrete GPUs, ask user to select
-    IFS=':' read -ra gpu_array <<< "$gpu_list"
-    if [[ ${#gpu_array[@]} -gt 1 ]]; then
-        gum style "Multiple GPUs detected. Please select the one to use:"
-        local selected_gpu=$(gum choose "${gpu_array[@]}")
-        echo "$gpu_type:$selected_gpu"
-    else
-        echo "$gpu_type:${gpu_array[0]}"
-    fi
-}
-
-# Function to install conda if needed
-ensure_conda() {
-    if ! command -v conda &>/dev/null; then
-        gum style --foreground 212 --bold "→ Installing Miniconda..."
-        if yay -S --noconfirm --needed miniconda3; then
-            gum style --foreground 40 "✓ Miniconda installed successfully"
-        else
-            gum style --foreground 1 --bold "✗ Failed to install Miniconda"
-            exit 1
-        fi
-    else
-        gum style --foreground 40 "✓ Conda is already installed"
-    fi
-    echo ""
-}
-
-# Function to run installation with output
+# Function to run installation step with output
 run_install_step() {
     local step_name="$1"
     local command="$2"
@@ -150,158 +56,215 @@ run_install_step() {
     fi
 }
 
+# Function to detect GPU hardware
+detect_gpu_hardware() {
+    local nvidia_gpus=()
+    local amd_gpus=()
+    local apple_gpus=()
+    
+    # Check for NVIDIA GPUs via lspci
+    if command -v lspci &>/dev/null; then
+        while IFS= read -r line; do
+            nvidia_gpus+=("$line")
+        done < <(lspci | grep -i "nvidia\|geforce\|tesla" | cut -d: -f3-)
+        
+        while IFS= read -r line; do
+            amd_gpus+=("$line")
+        done < <(lspci | grep -i "amd\|radeon" | cut -d: -f3-)
+    fi
+    
+    # Check for Apple Silicon
+    if [[ $(uname -m) == "arm64" ]]; then
+        apple_gpus=("Apple Silicon")
+    fi
+    
+    # Display detected GPUs
+    gum style --foreground 212 --bold "→ Detecting GPU Hardware"
+    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    if [[ ${#nvidia_gpus[@]} -gt 0 ]]; then
+        gum style --foreground 40 "✓ NVIDIA GPU(s) detected:"
+        for gpu in "${nvidia_gpus[@]}"; do
+            gum style --foreground 242 "  • ${gpu:0:60}"
+        done
+        echo ""
+    fi
+    
+    if [[ ${#amd_gpus[@]} -gt 0 ]]; then
+        gum style --foreground 40 "✓ AMD GPU(s) detected:"
+        for gpu in "${amd_gpus[@]}"; do
+            gum style --foreground 242 "  • ${gpu:0:60}"
+        done
+        echo ""
+    fi
+    
+    if [[ ${#apple_gpus[@]} -gt 0 ]]; then
+        gum style --foreground 40 "✓ Apple Silicon detected:"
+        for gpu in "${apple_gpus[@]}"; do
+            gum style --foreground 242 "  • $gpu"
+        done
+        echo ""
+    fi
+    
+    # Return GPU type for selection
+    if [[ ${#nvidia_gpus[@]} -gt 0 ]]; then
+        echo "NVIDIA"
+    elif [[ ${#amd_gpus[@]} -gt 0 ]]; then
+        echo "AMD"
+    elif [[ ${#apple_gpus[@]} -gt 0 ]]; then
+        echo "APPLE"
+    else
+        echo "NONE"
+    fi
+}
+
+# Function to select GPU
+select_gpu() {
+    local gpu_type="$1"
+    
+    if [[ "$gpu_type" == "NONE" ]]; then
+        gum style --foreground 1 --bold "✗ No compatible GPU found!"
+        gum style --foreground 242 "ComfyUI requires NVIDIA, AMD, or Apple Silicon GPU."
+        exit 1
+    fi
+    
+    gum style --foreground 212 --bold "→ GPU Selection"
+    gum style "Please select the primary GPU for ComfyUI:"
+    echo ""
+    
+    # Create GPU options based on detected types
+    local gpu_options=()
+    
+    if lspci 2>/dev/null | grep -qi "nvidia\|geforce\|tesla"; then
+        gpu_options+=("NVIDIA")
+    fi
+    
+    if lspci 2>/dev/null | grep -qi "amd\|radeon"; then
+        gpu_options+=("AMD")
+    fi
+    
+    if [[ $(uname -m) == "arm64" ]]; then
+        gpu_options+=("Apple Silicon")
+    fi
+    
+    local selected=$(gum choose "${gpu_options[@]}")
+    echo "$selected"
+}
+
 # ===== MAIN INSTALLATION FLOW =====
 
 clear
 gum style --foreground 212 --bold "ComfyUI Installation"
 echo ""
-gum style --foreground 242 "This script will install ComfyUI and configure it for your GPU."
+gum style --foreground 242 "This script will install ComfyUI with comfy-cli using Python 3.12 venv."
 echo ""
 
-# Step 1: Detect GPU
-gum style --foreground 212 --bold "Step 1/5: GPU Detection"
+# Step 1: Check and install Python 3.12
+gum style --foreground 212 --bold "Step 1/9: Python 3.12 Setup"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-gpu_info=$(detect_gpu)
-selected_gpu=$(select_gpu "$gpu_info")
-gpu_type="${selected_gpu%%:*}"
-gpu_device="${selected_gpu#*:}"
-gum style --foreground 40 "✓ Selected GPU: $gpu_type ($gpu_device)"
+
+if ! command -v python3.12 &>/dev/null; then
+    gum style "Python 3.12 not found. Installing..."
+    if ! run_install_step "Installing Python 3.12" "sudo pacman -S --noconfirm --needed python312"; then
+        exit 1
+    fi
+else
+    gum style --foreground 40 "✓ Python 3.12 is already installed"
+fi
 echo ""
 
-# Step 2: Ensure conda is installed
-gum style --foreground 212 --bold "Step 2/5: Check Dependencies"
+# Step 2: Create virtual environment
+gum style --foreground 212 --bold "Step 2/9: Create Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-ensure_conda
 
-# Initialize conda for bash
-if ! run_install_step "Initializing conda for bash" "/opt/miniconda3/bin/conda init bash"; then
+if [[ -d "$HOME/comfyenv" ]]; then
+    gum style --foreground 244 "⚠ Virtual environment already exists at: $HOME/comfyenv"
+    gum style --foreground 244 "Using existing environment..."
+else
+    if ! run_install_step "Creating Python 3.12 venv" "python3.12 -m venv $HOME/comfyenv"; then
+        exit 1
+    fi
+fi
+echo ""
+
+# Step 3: Activate virtual environment and upgrade pip
+gum style --foreground 212 --bold "Step 3/9: Activate Environment & Upgrade pip"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+source "$HOME/comfyenv/bin/activate"
+if ! run_install_step "Upgrading pip" "$HOME/comfyenv/bin/python -m pip install --upgrade pip"; then
     exit 1
 fi
 echo ""
 
-# Add TERMINFO environment variable to ~/.bashrc
-if ! grep -q "export TERMINFO=" "$HOME/.bashrc"; then
-    gum style --foreground 212 --bold "→ Configuring TERMINFO environment variable"
-    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo 'export TERMINFO="/usr/share/terminfo"' >> "$HOME/.bashrc"
-    gum style --foreground 40 "✓ TERMINFO environment variable added to ~/.bashrc"
+# Step 4: Install comfy-cli
+gum style --foreground 212 --bold "Step 4/9: Install comfy-cli"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if ! run_install_step "Installing comfy-cli" "$HOME/comfyenv/bin/python -m pip install comfy-cli"; then
+    exit 1
+fi
+echo ""
+
+# Step 5: Create temporary directory
+gum style --foreground 212 --bold "Step 5/9: Setup Temporary Directory"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [[ ! -d "$HOME/comfyenv/tmp" ]]; then
+    mkdir -p "$HOME/comfyenv/tmp"
+    gum style --foreground 40 "✓ Temporary directory created"
 else
-    gum style --foreground 212 --bold "→ Configuring TERMINFO environment variable"
-    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    gum style --foreground 244 "⚠ TERMINFO environment variable already exists in ~/.bashrc"
+    gum style --foreground 244 "⚠ Temporary directory already exists"
 fi
+export TMPDIR="$HOME/comfyenv/tmp"
+gum style --foreground 40 "✓ TMPDIR set to: $TMPDIR"
 echo ""
 
-# Source conda initialization
-gum spin --spinner dot --title "Sourcing conda initialization..." -- sleep 3
-source "$HOME/.bashrc"
-gum spin --spinner dot --title "Done" -- sleep 2
-conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
-conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+# Step 6: Detect GPU hardware
+gum style --foreground 212 --bold "Step 6/9: GPU Hardware Detection"
+detected_gpu=$(detect_gpu_hardware)
 echo ""
 
-# Step 3: Create virtual environment and clone repo
-gum style --foreground 212 --bold "Step 3/5: Setup Virtual Environment"
+# Step 7: Select GPU
+gum style --foreground 212 --bold "Step 7/9: Select Primary GPU"
+selected_gpu=$(select_gpu "$detected_gpu")
+echo ""
+gum style --foreground 40 "✓ Selected GPU: $selected_gpu"
+echo ""
+
+# Step 8: Install ComfyUI with appropriate GPU support
+gum style --foreground 212 --bold "Step 8/9: Install ComfyUI with GPU Support"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Create conda environment
-gum style --foreground 212 --bold "→ Creating comfyenv conda environment"
-gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-if ! conda info --envs | grep -q "comfyenv"; then
-    conda create -n comfyenv python=3.12 -y
-fi
-gum style --foreground 40 "✓ comfyenv conda environment is ready"
-echo ""
-
-# Check if ComfyUI directory exists
-gum style --foreground 212 --bold "→ Checking ComfyUI Repository"
-gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-if [[ -d "$HOME/ComfyUI" ]]; then
-    gum style "ComfyUI directory found at: $HOME/ComfyUI"
-    if run_install_step "Updating ComfyUI repository" "cd $HOME/ComfyUI && git pull"; then
-        echo ""
-        gum style --foreground 40 "✓ ComfyUI repository updated successfully"
-    else
-        gum style --foreground 1 --bold "✗ Failed to update ComfyUI repository"
-        exit 1
-    fi
-else
-    gum style "ComfyUI directory not found. Cloning repository..."
-    if ! run_install_step "Cloning ComfyUI repository" "git clone https://github.com/comfyanonymous/ComfyUI.git $HOME/ComfyUI"; then
-        exit 1
-    fi
-fi
-echo ""
-
-# Create temporary directory for ComfyUI
-if [[ -d "$HOME/ComfyUI/tmp" ]]; then
-    gum style --foreground 212 --bold "→ Setting up temporary directory"
-    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    gum style --foreground 244 "⚠ Temporary directory already exists at: $HOME/ComfyUI/tmp"
-else
-    gum style --foreground 212 --bold "→ Setting up temporary directory"
-    gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    mkdir "$HOME/ComfyUI/tmp"
-    gum style --foreground 40 "✓ Temporary directory created at: $HOME/ComfyUI/tmp"
-fi
-echo ""
-
-# Set TMPDIR environment variable for ComfyUI
-export TMPDIR="$HOME/ComfyUI/tmp"
-
-# Activate comfyenv environment
-gum spin --spinner dot --title "Activating comfyenv conda environment..." -- sleep 3
-conda init
-source "$HOME/.bashrc"
-conda activate comfyenv
-pip install pyyaml
-cd $HOME/ComfyUI
-pip install -r requirements.txt
-gum spin --spinner dot --title "Done" -- sleep 2
-echo ""
-
-# install required packages
-cd $HOME/ComfyUI
-gum style --foreground 212 --bold "Installing required Python packages"
-gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-pip install --upgrade pip setuptools wheel
-echo "" 
-gum style --foreground 40 "✓ pip, setuptools, and wheel upgraded"
-echo ""
-pip install -r requirements.txt
-gum style --foreground 40 "✓ Required Python packages installed"
-echo ""
-
-# Step 4: Install GPU dependencies
-gum style --foreground 212 --bold "Step 4/5: Installing GPU Dependencies"
-gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-case "$gpu_type" in
+case "$selected_gpu" in
     "NVIDIA")
-        if ! run_install_step "Installing PyTorch for NVIDIA (CUDA 12.1)" "conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y"; then
+        if ! run_install_step "Installing ComfyUI for NVIDIA" "$HOME/comfyenv/bin/comfy install --nvidia"; then
             exit 1
         fi
         ;;
     "AMD")
-        if ! run_install_step "Installing PyTorch for AMD (ROCm 6.0)" "pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.0"; then
+        if ! run_install_step "Installing ComfyUI for AMD" "$HOME/comfyenv/bin/comfy install --amd"; then
             exit 1
         fi
         ;;
-    "APPLE")
-        if ! run_install_step "Installing PyTorch for Apple Silicon" "conda install pytorch-nightly::pytorch torchvision torchaudio -c pytorch-nightly -y"; then
+    "Apple Silicon")
+        if ! run_install_step "Installing ComfyUI for Apple Silicon" "$HOME/comfyenv/bin/comfy install --m-series"; then
             exit 1
         fi
+        ;;
+    *)
+        gum style --foreground 1 "✗ Unknown GPU type: $selected_gpu"
+        exit 1
         ;;
 esac
 echo ""
 
-# Step 5: Setup desktop integration
-gum style --foreground 212 --bold "Step 5/5: Desktop Integration"
+# Step 9: Create desktop integration
+gum style --foreground 212 --bold "Step 9/9: Desktop Integration"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Copy launch script
-cd $ORIGINAL_DIR
+cd "$ORIGINAL_DIR"
 if [[ -f "bin/aitools/launch-comfyui.sh" ]]; then
     mkdir -p "$(dirname "$APP_EXEC")"
     cp bin/aitools/launch-comfyui.sh "$APP_EXEC"
@@ -313,7 +276,6 @@ fi
 echo ""
 
 # Copy icon
-cd $ORIGINAL_DIR
 if [[ -f "assets/comfyui.png" ]]; then
     mkdir -p "$(dirname "$ICON_PATH")"
     cp assets/comfyui.png "$ICON_PATH"
@@ -330,28 +292,42 @@ cat > "$DESKTOP_FILE" <<EOF
 Version=1.0
 Name=ComfyUI
 Comment=node-based application for generative AI
-Exec=bash -c '"$APP_EXEC"'
+Exec=bash -c "source $HOME/comfyenv/bin/activate && comfy launch"
 Terminal=true
 Type=Application
 Icon=$ICON_PATH
 StartupNotify=true
+Categories=Development;
 EOF
 
 chmod +x "$DESKTOP_FILE"
 gum style --foreground 40 "✓ Desktop file created"
 echo ""
 
-# Success message
+# Installation Summary
 echo ""
 gum style --foreground 212 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-gum style --foreground 40 --bold "✓ ComfyUI installation completed successfully!"
+gum style --foreground 40 --bold "✓ ComfyUI Installation Completed Successfully!"
+gum style --foreground 212 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-gum style --foreground 40 "GPU Type: $gpu_type"
-gum style --foreground 40 "Installation Location: $HOME/ComfyUI"
+
+gum style --foreground 212 --bold "Installation Summary:"
 echo ""
+gum style --foreground 40 "Python Version: 3.12"
+gum style --foreground 40 "Virtual Environment: $HOME/comfyenv"
+gum style --foreground 40 "GPU Type: $selected_gpu"
+gum style --foreground 40 "Temp Directory: $HOME/comfyenv/tmp"
+gum style --foreground 40 "Desktop File: $DESKTOP_FILE"
+gum style --foreground 40 "Launch Script: $APP_EXEC"
+echo ""
+
 gum style --foreground 212 "You can now start ComfyUI by:"
 gum style --foreground 212 "1. Using the desktop application (ComfyUI)"
-gum style --foreground 212 "2. Running: cd ~/ComfyUI && conda activate comfyenv && python main.py"
+gum style --foreground 212 "2. Running: source $HOME/comfyenv/bin/activate && comfy launch"
+gum style --foreground 212 "3. Or simply: $HOME/comfyenv/bin/comfy launch"
+echo ""
+
+gum style --foreground 40 "Installation directory: $HOME/.local/share/ComfyUI"
 echo ""
 
 cd "$ORIGINAL_DIR"
