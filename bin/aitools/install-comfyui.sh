@@ -249,6 +249,7 @@ gum style --foreground 212 --bold "Step 5/5: Desktop Integration"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Copy launch script
+cd $ORIGINAL_DIR
 if [[ -f "bin/aitools/launch-comfyui.sh" ]]; then
     mkdir -p "$(dirname "$APP_EXEC")"
     cp bin/aitools/launch-comfyui.sh "$APP_EXEC"
@@ -260,6 +261,7 @@ fi
 echo ""
 
 # Copy icon
+cd $ORIGINAL_DIR
 if [[ -f "assets/comfyui.png" ]]; then
     mkdir -p "$(dirname "$ICON_PATH")"
     cp assets/comfyui.png "$ICON_PATH"
@@ -276,7 +278,7 @@ cat > "$DESKTOP_FILE" <<EOF
 Version=1.0
 Name=ComfyUI
 Comment=node-based application for generative AI
-Exec=bash -c "cd \$HOME/ComfyUI && conda activate comfyenv && python main.py"
+Exec=bash -c "cd \$HOME/ComfyUI && conda deactivate && conda activate comfyenv && python main.py"
 Terminal=true
 Type=Application
 Icon=$ICON_PATH
