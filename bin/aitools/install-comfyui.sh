@@ -306,7 +306,7 @@ cat > "$DESKTOP_FILE" <<EOF
 Version=1.0
 Name=ComfyUI
 Comment=node-based application for generative AI
-Exec=bash -c "cd \$HOME/ComfyUI && conda deactivate && conda activate comfyenv && python main.py"
+Exec=bash -c '"$APP_EXEC"'
 Terminal=true
 Type=Application
 Icon=$ICON_PATH
