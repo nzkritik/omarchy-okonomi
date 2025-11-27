@@ -164,10 +164,19 @@ echo ""
 # Step 4: Install comfy-cli
 gum style --foreground 212 --bold "Step 4/9: Install comfy-cli"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
+if [[ ! -d "$HOME/comfy/" ]]; then
+    mkdir -p "$HOME/comfy"
+    gum style --foreground 40 "✓ comfy directory created"
+else
+    gum style --foreground 244 "⚠ comfy directory already exists"
+    mv "$HOME/comfy" "$HOME/comfy_backup_$(date +%s)"
+    gum style --foreground 40 "✓ Existing comfy directory backed up"
+fi
+cd "$HOME"
 if ! run_install_step "Installing comfy-cli" "$HOME/comfyenv/bin/python -m pip install comfy-cli"; then
     exit 1
 fi
+cd "$ORIGINAL_DIR"
 echo ""
 
 # Step 5: Create temporary directory
