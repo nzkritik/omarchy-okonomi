@@ -115,23 +115,6 @@ detect_gpu_hardware() {
     fi
 }
 
-# Function to select GPU
-select_gpu() {
-    local gpu_type="$1"
-    
-    if [[ "$gpu_type" == "NONE" ]]; then
-        gum style --foreground 1 --bold "✗ No compatible GPU found!"
-        gum style --foreground 242 "ComfyUI requires NVIDIA, AMD, or Apple Silicon GPU."
-        exit 1
-    fi
-    
-    gum style --foreground 212 --bold "→ GPU Selection"
-    gum style "Please select the primary GPU for ComfyUI:"
-    echo ""
-    local selected=$(gum choose --limit 1 "NVIDIA" "AMD" "APPLE" "NONE")
-    echo "$selected"
-}
-
 # ===== MAIN INSTALLATION FLOW =====
 
 clear
@@ -212,17 +195,16 @@ echo ""
 # Step 7: Select GPU
 gum style --foreground 212 --bold "Step 7/9: Select Primary GPU"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-#selected_gpu=$(select_gpu "$detected_gpu")
-selected_gpu=$(select_gpu "NVIDIA, AMD, APPLE, NONE")
+selected=$(gum choose --limit 1 "NVIDIA" "AMD" "APPLE" "NONE")
 echo ""
-gum style --foreground 40 "✓ Selected GPU: $selected_gpu"
+gum style --foreground 40 "✓ Selected GPU: $selected"
 echo ""
 
 # Step 8: Install ComfyUI with appropriate GPU support
 gum style --foreground 212 --bold "Step 8/9: Install ComfyUI with GPU Support"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-case "$selected_gpu" in
+case "$selected" in
     "NVIDIA")
         if ! run_install_step "Installing ComfyUI for NVIDIA" "$HOME/comfyenv/bin/comfy install --nvidia"; then
             exit 1
@@ -238,7 +220,7 @@ case "$selected_gpu" in
             exit 1
         fi
         ;;
-    *)
+    "NONE")
         gum style --foreground 1 "✗ Unknown GPU type: $selected_gpu"
         exit 1
         ;;
