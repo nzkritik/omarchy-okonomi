@@ -3,6 +3,9 @@ scripts/install-dotfiles.sh
 scripts/hyprland-overrides.conf
 scripts/install-hyprland-overrides.sh
 scripts/system-tweaks.sh
+bin/aitools/launch-comfyui.sh
+
+# git rm --cached <path/to/file>
 
 # Ignore all files with a certain extension
 # *.log
