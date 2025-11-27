@@ -213,29 +213,6 @@ echo ""
 gum style --foreground 212 --bold "Step 8/9: Install ComfyUI with GPU Support"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-case "$selected" in
-    "NVIDIA")
-        if ! run_install_step "Installing ComfyUI for NVIDIA" "$HOME/comfyenv/bin/comfy install --nvidia"; then
-            exit 1
-        fi
-        ;;
-    "AMD")
-        if ! run_install_step "Installing ComfyUI for AMD" "$HOME/comfyenv/bin/comfy install --amd"; then
-            exit 1
-        fi
-        ;;
-    "APPLE")
-        if ! run_install_step "Installing ComfyUI for Apple Silicon" "$HOME/comfyenv/bin/comfy install --m-series"; then
-            exit 1
-        fi
-        ;;
-    "NONE")
-        gum style --foreground 1 "✗ Unknown GPU type: $selected_gpu"
-        exit 1
-        ;;
-esac
-echo ""
-
 # Step 9: Create desktop integration
 gum style --foreground 212 --bold "Step 9/9: Desktop Integration"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -250,6 +227,29 @@ if [[ -f "bin/aitools/launch-comfyui.sh" ]]; then
 else
     gum style --foreground 242 "⚠ Launch script not found in bin/aitools/"
 fi
+echo ""
+
+case "$selected" in
+    "NVIDIA")
+        if ! run_install_step "Installing ComfyUI for NVIDIA" "yes | comfy install --nvidia"; then
+            exit 1
+        fi
+        ;;
+    "AMD")
+        if ! run_install_step "Installing ComfyUI for AMD" "yes | comfy install --amd"; then
+            exit 1
+        fi
+        ;;
+    "APPLE")
+        if ! run_install_step "Installing ComfyUI for Apple Silicon" "yes | comfy install --m-series"; then
+            exit 1
+        fi
+        ;;
+    "NONE")
+        gum style --foreground 1 "✗ Unknown GPU type: $selected"
+        exit 1
+        ;;
+esac
 echo ""
 
 # Copy icon
@@ -292,7 +292,7 @@ gum style --foreground 212 --bold "Installation Summary:"
 echo ""
 gum style --foreground 40 "Python Version: 3.12"
 gum style --foreground 40 "Virtual Environment: $HOME/comfyenv"
-gum style --foreground 40 "GPU Type: $selected_gpu"
+gum style --foreground 40 "GPU Type: $selected"
 gum style --foreground 40 "Temp Directory: $HOME/comfyenv/tmp"
 gum style --foreground 40 "Desktop File: $DESKTOP_FILE"
 gum style --foreground 40 "Launch Script: $APP_EXEC"
