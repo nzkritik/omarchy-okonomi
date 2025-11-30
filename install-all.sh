@@ -37,6 +37,7 @@ show_gum_menu() {
         "Install Development App and Languages|Programming languages and environments|./bin/development.sh|false"
         "Install AI Tools|AI-powered applications and tools|./bin/ai-tools.sh|false"
         "Install System Apps|System utilities and security tools|./bin/system.sh|false"
+        # "Install Game Apps|Gaming platforms and clients|./bin/games.sh|false"
     )
 
     # Build display options and keep track of mapping
