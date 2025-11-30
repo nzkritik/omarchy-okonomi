@@ -6,6 +6,8 @@ ORIGINAL_DIR=$(pwd)
 INSTALL_DIR="$HOME/ai-toolkit"
 DESKTOP_FILE="$HOME/.local/share/applications/AI-Toolkit.desktop"
 ICON_PATH="$HOME/.local/share/applications/icons/ai-toolkit.png"
+LAUNCH_SCRIPT_SRC="$ORIGINAL_DIR/scripts/launch-ai-toolkit.sh"
+LAUNCH_SCRIPT_DEST="$HOME/.local/share/ai-toolkit/launch-ai-toolkit.sh"
 CUDA_VERSION="12.6"
 
 # Ensure gum is installed
@@ -182,7 +184,7 @@ confirm_install_directory
 confirm_cuda_version
 
 # Step 1: Check if directory already exists
-gum style --foreground 212 --bold "Step 1/6: Clone Repository"
+gum style --foreground 212 --bold "Step 1/7: Clone Repository"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [[ -d "$INSTALL_DIR" ]]; then
@@ -204,7 +206,7 @@ fi
 echo ""
 
 # Step 2: Create virtual environment
-gum style --foreground 212 --bold "Step 2/6: Create Virtual Environment"
+gum style --foreground 212 --bold "Step 2/7: Create Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [[ -d "$INSTALL_DIR/venv" ]]; then
@@ -218,7 +220,7 @@ fi
 echo ""
 
 # Step 3: Activate virtual environment and upgrade pip
-gum style --foreground 212 --bold "Step 3/6: Setup Python Environment"
+gum style --foreground 212 --bold "Step 3/7: Setup Python Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 source "$INSTALL_DIR/venv/bin/activate"
@@ -228,7 +230,7 @@ fi
 echo ""
 
 # Step 4: Install PyTorch with selected CUDA version
-gum style --foreground 212 --bold "Step 4/6: Install PyTorch"
+gum style --foreground 212 --bold "Step 4/7: Install PyTorch"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Convert CUDA version to wheel index format (e.g., 12.6 -> cu126)
@@ -241,7 +243,7 @@ fi
 echo ""
 
 # Step 5: Install AI Toolkit dependencies
-gum style --foreground 212 --bold "Step 5/6: Install Dependencies"
+gum style --foreground 212 --bold "Step 5/7: Install Dependencies"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if ! run_install_step "Installing AI Toolkit requirements" \
@@ -250,8 +252,32 @@ if ! run_install_step "Installing AI Toolkit requirements" \
 fi
 echo ""
 
-# Step 6: Create desktop integration
-gum style --foreground 212 --bold "Step 6/6: Desktop Integration"
+# Step 6: Copy launch script
+gum style --foreground 212 --bold "Step 6/7: Install Launch Script"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [[ ! -f "$LAUNCH_SCRIPT_SRC" ]]; then
+    gum style --foreground 1 --bold "✗ Launch script not found!"
+    gum style --foreground 242 "Expected location: $LAUNCH_SCRIPT_SRC"
+    echo ""
+    gum style --foreground 244 "⚠ Skipping launch script installation..."
+else
+    # Create destination directory if it doesn't exist
+    mkdir -p "$(dirname "$LAUNCH_SCRIPT_DEST")"
+    
+    # Copy launch script
+    if cp "$LAUNCH_SCRIPT_SRC" "$LAUNCH_SCRIPT_DEST"; then
+        chmod +x "$LAUNCH_SCRIPT_DEST"
+        gum style --foreground 40 "✓ Launch script installed at: $LAUNCH_SCRIPT_DEST"
+    else
+        gum style --foreground 1 --bold "✗ Failed to copy launch script"
+        gum style --foreground 244 "⚠ Desktop file will use manual command"
+    fi
+fi
+echo ""
+
+# Step 7: Create desktop integration
+gum style --foreground 212 --bold "Step 7/7: Desktop Integration"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Create directories
@@ -268,13 +294,13 @@ else
 fi
 echo ""
 
-# Create desktop file
+# Create desktop file with launch script
 cat > "$DESKTOP_FILE" <<EOF
 [Desktop Entry]
 Version=1.0
 Name=AI Toolkit
 Comment=Machine learning training toolkit
-Exec=bash -c "source $INSTALL_DIR/venv/bin/activate && cd $INSTALL_DIR && python3 -m toolkit"
+Exec=$LAUNCH_SCRIPT_DEST
 Terminal=true
 Type=Application
 Icon=$ICON_PATH
@@ -298,13 +324,15 @@ echo ""
 gum style --foreground 40 "Install Location: $INSTALL_DIR"
 gum style --foreground 40 "Virtual Environment: $INSTALL_DIR/venv"
 gum style --foreground 40 "PyTorch Version: 2.7.0 (CUDA $CUDA_VERSION)"
+gum style --foreground 40 "Launch Script: $LAUNCH_SCRIPT_DEST"
 gum style --foreground 40 "Desktop File: $DESKTOP_FILE"
 echo ""
 
 gum style --foreground 212 "You can now start AI Toolkit by:"
 gum style --foreground 212 "1. Using the desktop application (AI Toolkit)"
-gum style --foreground 212 "2. Running: source $INSTALL_DIR/venv/bin/activate && cd $INSTALL_DIR && python3 -m toolkit"
-gum style --foreground 212 "3. Or directly: $INSTALL_DIR/venv/bin/python3 -m toolkit"
+gum style --foreground 212 "2. Running: $LAUNCH_SCRIPT_DEST"
+gum style --foreground 212 "3. Or using the manual command:"
+gum style --foreground 212 "   source $INSTALL_DIR/venv/bin/activate && cd $INSTALL_DIR && python3 -m toolkit"
 echo ""
 
 gum style --foreground 242 "Repository: https://github.com/ostris/ai-toolkit.git"
