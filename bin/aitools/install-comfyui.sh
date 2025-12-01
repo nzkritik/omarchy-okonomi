@@ -16,7 +16,7 @@ if ! command -v gum &>/dev/null; then
     }
 fi
 
-# Function to run installation step with output
+# Function to run installation step with live output
 run_install_step() {
     local step_name="$1"
     local command="$2"
@@ -24,34 +24,17 @@ run_install_step() {
     gum style --foreground 212 --bold "→ $step_name"
     gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    local output_file
-    output_file=$(mktemp)
+    # Run command directly without tail to preserve color formatting
+    eval "$command"
+    local exit_code=$?
     
-    # Run command in background
-    eval "$command" > "$output_file" 2>&1 &
-    local pid=$!
+    echo ""
     
-    # Tail output in real-time
-    tail -f "$output_file" &
-    local tail_pid=$!
-    
-    # Wait for completion
-    if wait $pid 2>/dev/null; then
-        kill $tail_pid 2>/dev/null || true
-        wait $tail_pid 2>/dev/null || true
-        echo ""
+    if [[ $exit_code -eq 0 ]]; then
         gum style --foreground 40 "✓ $step_name completed successfully"
-        rm -f "$output_file"
         return 0
     else
-        local exit_code=$?
-        kill $tail_pid 2>/dev/null || true
-        wait $tail_pid 2>/dev/null || true
-        echo ""
         gum style --foreground 1 --bold "✗ $step_name failed (exit code: $exit_code)"
-        gum style --foreground 242 "Last output:"
-        tail -20 "$output_file" | gum style --foreground 242
-        rm -f "$output_file"
         return 1
     fi
 }
@@ -196,9 +179,7 @@ echo ""
 # Step 6: Detect GPU hardware
 gum style --foreground 212 --bold "Step 6/9: GPU Hardware Detection"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-#detected_gpu=$(detect_gpu_hardware)
 detect_gpu_hardware
-#gum style --foreground 40 "✓ GPU detection => $detected_gpu"
 echo ""
 
 # Step 7: Select GPU
@@ -212,22 +193,6 @@ echo ""
 # Step 8: Install ComfyUI with appropriate GPU support
 gum style --foreground 212 --bold "Step 8/9: Install ComfyUI with GPU Support"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# Step 9: Create desktop integration
-gum style --foreground 212 --bold "Step 9/9: Desktop Integration"
-gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# Copy launch script
-cd "$ORIGINAL_DIR"
-if [[ -f "bin/aitools/launch-comfyui.sh" ]]; then
-    mkdir -p "$(dirname "$APP_EXEC")"
-    cp bin/aitools/launch-comfyui.sh "$APP_EXEC"
-    chmod +x "$APP_EXEC"
-    gum style --foreground 40 "✓ Launch script installed"
-else
-    gum style --foreground 242 "⚠ Launch script not found in bin/aitools/"
-fi
-echo ""
 
 case "$selected" in
     "NVIDIA")
@@ -246,10 +211,31 @@ case "$selected" in
         fi
         ;;
     "NONE")
-        gum style --foreground 1 "✗ Unknown GPU type: $selected"
+        if ! run_install_step "Comfy UI may fail to install or fail to launch" "yes | comfy install"; then
+            exit 1
+        fi
+        ;;
+    *)
+        gum style --foreground 1 "✗ Invalid GPU selection!"    
         exit 1
         ;;
 esac
+echo ""
+
+# Step 9: Create desktop integration
+gum style --foreground 212 --bold "Step 9/9: Desktop Integration"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Copy launch script
+cd "$ORIGINAL_DIR"
+if [[ -f "bin/aitools/launch-comfyui.sh" ]]; then
+    mkdir -p "$(dirname "$APP_EXEC")"
+    cp bin/aitools/launch-comfyui.sh "$APP_EXEC"
+    chmod +x "$APP_EXEC"
+    gum style --foreground 40 "✓ Launch script installed"
+else
+    gum style --foreground 242 "⚠ Launch script not found in bin/aitools/"
+fi
 echo ""
 
 # Copy icon

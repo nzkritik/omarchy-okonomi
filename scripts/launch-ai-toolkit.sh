@@ -22,34 +22,17 @@ run_step() {
     gum style --foreground 212 --bold "→ $step_name"
     gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    local output_file
-    output_file=$(mktemp)
+    # Run command directly without tail to preserve color formatting
+    eval "$command"
+    local exit_code=$?
     
-    # Run command in background
-    eval "$command" > "$output_file" 2>&1 &
-    local pid=$!
+    echo ""
     
-    # Tail output in real-time
-    tail -f "$output_file" &
-    local tail_pid=$!
-    
-    # Wait for completion
-    if wait $pid 2>/dev/null; then
-        kill $tail_pid 2>/dev/null || true
-        wait $tail_pid 2>/dev/null || true
-        echo ""
+    if [[ $exit_code -eq 0 ]]; then
         gum style --foreground 40 "✓ $step_name completed successfully"
-        rm -f "$output_file"
         return 0
     else
-        local exit_code=$?
-        kill $tail_pid 2>/dev/null || true
-        wait $tail_pid 2>/dev/null || true
-        echo ""
         gum style --foreground 1 --bold "✗ $step_name failed (exit code: $exit_code)"
-        gum style --foreground 242 "Last output:"
-        tail -20 "$output_file" | gum style --foreground 242
-        rm -f "$output_file"
         return 1
     fi
 }
