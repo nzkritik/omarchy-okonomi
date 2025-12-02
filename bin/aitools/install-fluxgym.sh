@@ -219,10 +219,17 @@ echo ""
 gum style --foreground 212 --bold "Step 5/10: Activate Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-source "$INSTALL_DIR/env/bin/activate"
-if [[ -n "$VIRTUAL_ENV" ]]; then
-    gum style --foreground 40 "✓ Virtual environment activated"
-    gum style --foreground 242 "Location: $VIRTUAL_ENV"
+gum style --foreground 212 "→ Activating virtual environment..."
+
+# Use source in a subshell to activate and check
+if source "$INSTALL_DIR/env/bin/activate" 2>&1; then
+    if command -v python &>/dev/null && [[ "$(python --version 2>&1)" == *"3.10"* ]]; then
+        gum style --foreground 40 "✓ Virtual environment activated successfully"
+        gum style --foreground 242 "Python: $(python --version)"
+    else
+        gum style --foreground 1 --bold "✗ Virtual environment activation failed - Python not found in venv"
+        exit 1
+    fi
 else
     gum style --foreground 1 --bold "✗ Failed to activate virtual environment"
     exit 1
