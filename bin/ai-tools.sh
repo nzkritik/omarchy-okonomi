@@ -75,51 +75,24 @@ show_ai_tool_menu() {
                 continue
             fi
             
-            # Create temp file for output
-            local output_file
-            output_file=$(mktemp)
-            
             # Display installation header
             gum style --foreground 212 --bold "→ Installing $name..."
             gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             
-            # Run the installation script in background and tail output in real-time
-            "$script" > "$output_file" 2>&1 &
-            local pid=$!
-            
-            # Tail the output file in real-time until the process completes
-            tail -f "$output_file" &
-            local tail_pid=$!
-            
-            # Wait for the installation to complete
-            if wait $pid 2>/dev/null; then
-                # Kill the tail process
-                kill $tail_pid 2>/dev/null || true
-                wait $tail_pid 2>/dev/null || true
-                
-                # Show final success message
+            # Run the installation script directly to preserve color formatting and real-time output
+            if "$script"; then
+                # Installation succeeded
                 echo ""
                 gum style --foreground 40 --bold "✓ $name installed successfully"
                 successful_installs+=("$name")
             else
                 exit_code=$?
-                # Kill the tail process
-                kill $tail_pid 2>/dev/null || true
-                wait $tail_pid 2>/dev/null || true
-                
-                # Show final error message
+                # Installation failed
                 echo ""
                 gum style --foreground 1 --bold "✗ Failed to install $name (exit code: $exit_code)"
-                
-                # Show last 10 lines of output for context
-                gum style --foreground 242 "Last output:"
-                tail -10 "$output_file" | gum style --foreground 242
-                
                 failed_installs+=("$name")
             fi
             
-            # Clean up temp file
-            rm -f "$output_file"
             echo ""
         fi
     done
