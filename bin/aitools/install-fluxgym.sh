@@ -316,8 +316,8 @@ mkdir -p "$(dirname "$DESKTOP_FILE")"
 mkdir -p "$(dirname "$ICON_PATH")"
 
 # Copy icon if available
-if [[ -f "$ORIGINAL_DIR/icon.png" ]]; then
-    cp "$ORIGINAL_DIR/icon.png" "$ICON_PATH"
+if [[ -f "$INSTALL_DIR/icon.png" ]]; then
+    cp "$INSTALL_DIR/icon.png" "$ICON_PATH"
     gum style --foreground 40 "✓ Icon installed"
 else
     gum style --foreground 244 "⚠ Icon file not found in assets/"
@@ -355,7 +355,7 @@ echo ""
 gum style --foreground 40 "Install Location: $INSTALL_DIR"
 gum style --foreground 40 "Python Version: 3.10"
 gum style --foreground 40 "Virtual Environment: $INSTALL_DIR/env"
-gum style --foreground 40 "PyTorch Version: Nightly (CUDA $CUDA_VERSION)"
+gum style --foreground 40 "PyTorch Version: (CUDA $CUDA_VERSION)"
 gum style --foreground 40 "Desktop File: $DESKTOP_FILE"
 if [[ "$CUDA_VERSION" == "12.8" ]]; then
     gum style --foreground 40 "GPU Support: RTX 50-series optimized"
