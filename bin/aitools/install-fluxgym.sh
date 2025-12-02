@@ -272,8 +272,8 @@ gum style --foreground 242 "━━━━━━━━━━━━━━━━━�
 # Convert CUDA version to wheel index format (e.g., 12.1 -> cu121)
 CUDA_WHEEL=$(echo "$CUDA_VERSION" | sed 's/\.//g')
 
-if ! run_install_step "Installing PyTorch (Nightly) with CUDA $CUDA_VERSION" \
-    "pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu${CUDA_WHEEL}"; then
+if ! run_install_step "Installing PyTorch with CUDA $CUDA_VERSION" \
+    "pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu${CUDA_WHEEL}"; then
     exit 1
 fi
 echo ""
