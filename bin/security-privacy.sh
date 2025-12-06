@@ -24,14 +24,14 @@ show_security-privacy_menu() {
     )
 
     # Build display options and keep track of mapping
-    declare -A security-privacy_map=()
+    declare -A security_privacy_map=()
     declare -a display_options=()
     
     for item in "${securityprivacy[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        security-privacy_map["$display_key"]="$name|$desc|$script"
+        security_privacy_map["$display_key"]="$name|$desc|$script"
     done
 
     # Show security-privacy App selection menu
@@ -62,8 +62,8 @@ show_security-privacy_menu() {
     
     for selected_item in "${selected_array[@]}"; do
         # Get the security-privacy info from the map
-        if [[ -n "${security-privacy_map[$selected_item]:-}" ]]; then
-            IFS='|' read -r name desc script <<< "${security-privacy_map[$selected_item]}"
+        if [[ -n "${security_privacy_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${security_privacy_map[$selected_item]}"
             
             if [[ ! -x "$script" ]]; then
                 gum style --foreground 1 "✗ $script not found or not executable"
