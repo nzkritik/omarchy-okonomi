@@ -32,9 +32,9 @@ show_gum_menu() {
         "Install Web Browsers|Various web browsers|./bin/browsers.sh|false"
         "Install Creativity Apps|Photo and video editing software suite|./bin/creativity.sh|false"
         "Install Torrent Clients|Popular torrent applications|./bin/torrents.sh|false"
-        "Install Development App and Languages|Programming languages and environments|./bin/development.sh|false"
+        "Install Development Apps|Programming languages and environments|./bin/development.sh|false"
         "Install AI Tools|AI-powered applications and tools|./bin/ai-tools.sh|false"
-        "Install System Apps|System utilities and security tools|./bin/system.sh|false"
+        "Install System Apps|Utilities, privacy and security tools|./bin/system.sh|false"
         "Install Game Apps|Gaming platforms and clients|./bin/games.sh|false"
     )
 
