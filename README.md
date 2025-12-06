@@ -45,7 +45,7 @@ Therefore this is Omarchy-Okonomi. ("customers choice" not "chefs choice")
     - [X] Torrent Apps  
     - [X] Development Apps  
     - [X] AI Tools
-    - [ ] Gaming Apps  
+    - [X] Gaming Apps  
     - [X] System Tools/Security/Utilities  
     - [ ] System Tweaks  
   - [X] provide options to install only certain categories of apps/configs  
