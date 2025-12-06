@@ -11,34 +11,33 @@ if ! command -v gum &>/dev/null; then
     }
 fi
 
-# Function to display utility app selection menu
-show_utility_menu() {
-    # Define utility array with: name, description, install script, selected (true/false)
-    declare -a utilitys=(
-        "Remove Omarchy Apps|Uninstall default Omarchy applications|./scripts/remove-apps.sh|false"
-        "Remove Omarchy Webapps|Uninstall default Omarchy webapps|./scripts/remove-webapps.sh|false"        
-        "tmux|Terminal multiplexer|./bin/system/install-tmux.sh|false"
-        "stow|GNU Stow symlink manager|./bin/system/install-stow.sh|false"
-        "nvtop|Real-time Nvidia GPU monitoring tool|./bin/sys-utils/install-nvtop.sh|false"
-        "amdgpu_top|Real-time AMD GPU monitoring tool|./bin/sys-utils/install-amdgpu-top.sh|false"
-        "p7zip-gui|Graphical frontend for 7zip compression tool|./bin/sys-utils/install-p7zip-gui.sh|false"
+# Function to display security-privacy app selection menu
+show_security-privacy_menu() {
+    # Define security-privacy array with: name, description, install script, selected (true/false)
+    declare -a security-privacys=(
+        "Bitwarden|Open-source password manager|./bin/system/install-bitwarden.sh|false"
+        "BleachBit|System cleaner and privacy manager|./bin/system/install-bleachbit.sh|false"
+        "tor browser|Anonymous web browsing over the Tor network|./bin/browsers/install-tor-browser.sh|false"
+        "ecryptfs|Filesystem-level encryption tool|./bin/system/install-encryptfs.sh|false"
+        "gocryptfs|User-space encrypted overlay filesystem|./bin/system/install-gocryptfs.sh|false"
+        "Veracrypt|Disk encryption software|./bin/system/install-veracrypt.sh|false"
     )
 
     # Build display options and keep track of mapping
-    declare -A utility_map=()
+    declare -A security-privacy_map=()
     declare -a display_options=()
     
-    for item in "${utilitys[@]}"; do
+    for item in "${security-privacys[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        utility_map["$display_key"]="$name|$desc|$script"
+        security-privacy_map["$display_key"]="$name|$desc|$script"
     done
 
-    # Show utility App selection menu
-    gum style --foreground 212 --bold "Utility Installation"
+    # Show security-privacy App selection menu
+    gum style --foreground 212 --bold "security-privacy Installation"
     echo ""
-    gum style "Select Utility Apps to install (space to toggle, Enter to confirm):"
+    gum style "Select security-privacy Apps to install (space to toggle, Enter to confirm):"
     echo ""
 
     selected=$(gum choose --no-limit --height=10 \
@@ -46,13 +45,13 @@ show_utility_menu() {
 
     # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
-        gum style --foreground 244 "No Utility Apps selected."
+        gum style --foreground 244 "No security-privacy Apps selected."
         exit 0
     fi
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected Utility Apps.."
+    gum style --foreground 212 --bold "Installing selected security-privacy Apps.."
     echo ""
     
     # Track installation results
@@ -62,9 +61,9 @@ show_utility_menu() {
     mapfile -t selected_array <<<"$selected"
     
     for selected_item in "${selected_array[@]}"; do
-        # Get the utility info from the map
-        if [[ -n "${utility_map[$selected_item]:-}" ]]; then
-            IFS='|' read -r name desc script <<< "${utility_map[$selected_item]}"
+        # Get the security-privacy info from the map
+        if [[ -n "${security-privacy_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${security-privacy_map[$selected_item]}"
             
             if [[ ! -x "$script" ]]; then
                 gum style --foreground 1 "✗ $script not found or not executable"
@@ -142,8 +141,8 @@ show_utility_menu() {
     fi
     
     echo ""
-    gum style --foreground 40 --bold "Utility App installation complete!"
+    gum style --foreground 40 --bold "security-privacy App installation complete!"
 }
 
-# Run the utility menu
-show_utility_menu
+# Run the security-privacy menu
+show_security-privacy_menu

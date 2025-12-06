@@ -15,14 +15,10 @@ fi
 show_system_menu() {
     # Define system array with: name, description, install script, selected (true/false)
     declare -a systems=(
-        "Bitwarden|Open-source password manager|./bin/system/install-bitwarden.sh|false"
         "KVM|Virtualization solution for Linux|./bin/system/install-kvm.sh|false"
         "Screensavers|Add an additional screensaver|./bin/system/install-screensavers.sh|false"
-        "tor browser|Anonymous web browsing over the Tor network|./bin/browsers/install-tor-browser.sh|false"
-        "BleachBit|System cleaner and privacy manager|./bin/system/install-bleachbit.sh|false"
-        "ecryptfs|Filesystem-level encryption tool|./bin/system/install-encryptfs.sh|false"
-        "gocryptfs|User-space encrypted overlay filesystem|./bin/system/install-gocryptfs.sh|false"
-        "Veracrypt|Disk encryption software|./bin/system/install-veracrypt.sh|false"
+        "System Utilities|Various system utilities and tools|./bin/sys-utils.sh|false"
+        "Security & Privacy Apps|Security and privacy focused applications|./bin/security-privacy.sh|false"
     )
 
     # Build display options and keep track of mapping
