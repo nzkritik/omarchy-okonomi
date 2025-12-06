@@ -19,8 +19,6 @@ show_game_menu() {
         "Steam|Popular gaming platform by Valve|omarchy-install-steam|false"
         "Heroic Games Launcher|Epic Games and GOG client|./bin/games/install-heroic.sh|false"
         "Itch.io|Indie game platform|./bin/games/install-itchio.sh|false"
-        "PlayOnLinux|Run Windows games on Linux|./bin/games/install-playonlinux.sh|false"
-        "GameHub|Game library manager|./bin/games/install-gamehub.sh|false"
         "Prism Launcher|Minecraft Manager and Launcher|./bin/games/install-prism.sh|false"
     )
 
