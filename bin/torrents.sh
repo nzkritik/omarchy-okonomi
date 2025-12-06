@@ -34,7 +34,7 @@ show_torrent_menu() {
     done
 
     # Show torrent App selection menu
-    gum style --foreground 212 --bold "Web Torrent Installation"
+    gum style --foreground 212 --bold "Torrent Installation"
     echo ""
     gum style "Select torrent Apps to install (space to toggle, Enter to confirm):"
     echo ""

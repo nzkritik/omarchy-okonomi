@@ -11,35 +11,32 @@ if ! command -v gum &>/dev/null; then
     }
 fi
 
-# Function to display system app selection menu
-show_system_menu() {
-    # Define system array with: name, description, install script, selected (true/false)
-    declare -a systems=(
-        "Bitwarden|Open-source password manager|./bin/system/install-bitwarden.sh|false"
-        "KVM|Virtualization solution for Linux|./bin/system/install-kvm.sh|false"
-        "Screensavers|Add an additional screensaver|./bin/system/install-screensavers.sh|false"
-        "tor browser|Anonymous web browsing over the Tor network|./bin/browsers/install-tor-browser.sh|false"
-        "BleachBit|System cleaner and privacy manager|./bin/system/install-bleachbit.sh|false"
-        "ecryptfs|Filesystem-level encryption tool|./bin/system/install-encryptfs.sh|false"
-        "gocryptfs|User-space encrypted overlay filesystem|./bin/system/install-gocryptfs.sh|false"
-        "Veracrypt|Disk encryption software|./bin/system/install-veracrypt.sh|false"
+# Function to display utility app selection menu
+show_utility_menu() {
+    # Define utility array with: name, description, install script, selected (true/false)
+    declare -a utilitys=(
+        "tmux|Terminal multiplexer|./bin/system/install-tmux.sh|false"
+        "stow|GNU Stow symlink manager|./bin/system/install-stow.sh|false"
+        "nvtop|Real-time Nvidia GPU monitoring tool|./bin/sys-utils/install-nvtop.sh|false"
+        "amdgpu_top|Real-time AMD GPU monitoring tool|./bin/sys-utils/install-amdgpu-top.sh|false"
+        "p7zip-gui|Graphical frontend for 7zip compression tool|./bin/sys-utils/install-p7zip-gui.sh|false"
     )
 
     # Build display options and keep track of mapping
-    declare -A system_map=()
+    declare -A utility_map=()
     declare -a display_options=()
     
-    for item in "${systems[@]}"; do
+    for item in "${utilitys[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
-        system_map["$display_key"]="$name|$desc|$script"
+        utility_map["$display_key"]="$name|$desc|$script"
     done
 
-    # Show system App selection menu
-    gum style --foreground 212 --bold "System, Security or Tool Installation"
+    # Show utility App selection menu
+    gum style --foreground 212 --bold "Utility Installation"
     echo ""
-    gum style "Select System, security or Tool Apps to install (space to toggle, Enter to confirm):"
+    gum style "Select Utility Apps to install (space to toggle, Enter to confirm):"
     echo ""
 
     selected=$(gum choose --no-limit --height=10 \
@@ -47,13 +44,13 @@ show_system_menu() {
 
     # User cancelled or no selection
     if [[ -z "${selected:-}" ]]; then
-        gum style --foreground 244 "No Apps selected."
+        gum style --foreground 244 "No Utility Apps selected."
         exit 0
     fi
 
     # Parse selected items and run corresponding scripts
     echo ""
-    gum style --foreground 212 --bold "Installing selected Apps.."
+    gum style --foreground 212 --bold "Installing selected Utility Apps.."
     echo ""
     
     # Track installation results
@@ -63,9 +60,9 @@ show_system_menu() {
     mapfile -t selected_array <<<"$selected"
     
     for selected_item in "${selected_array[@]}"; do
-        # Get the system info from the map
-        if [[ -n "${system_map[$selected_item]:-}" ]]; then
-            IFS='|' read -r name desc script <<< "${system_map[$selected_item]}"
+        # Get the utility info from the map
+        if [[ -n "${utility_map[$selected_item]:-}" ]]; then
+            IFS='|' read -r name desc script <<< "${utility_map[$selected_item]}"
             
             if [[ ! -x "$script" ]]; then
                 gum style --foreground 1 "✗ $script not found or not executable"
@@ -143,8 +140,8 @@ show_system_menu() {
     fi
     
     echo ""
-    gum style --foreground 40 --bold "App installation complete!"
+    gum style --foreground 40 --bold "Utility App installation complete!"
 }
 
-# Run the system menu
-show_system_menu
+# Run the utility menu
+show_utility_menu
