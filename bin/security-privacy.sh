@@ -14,7 +14,7 @@ fi
 # Function to display security-privacy app selection menu
 show_security-privacy_menu() {
     # Define security-privacy array with: name, description, install script, selected (true/false)
-    declare -a security-privacys=(
+    declare -a securityprivacy=(
         "Bitwarden|Open-source password manager|./bin/system/install-bitwarden.sh|false"
         "BleachBit|System cleaner and privacy manager|./bin/system/install-bleachbit.sh|false"
         "tor browser|Anonymous web browsing over the Tor network|./bin/browsers/install-tor-browser.sh|false"
@@ -27,7 +27,7 @@ show_security-privacy_menu() {
     declare -A security-privacy_map=()
     declare -a display_options=()
     
-    for item in "${security-privacys[@]}"; do
+    for item in "${securityprivacy[@]}"; do
         IFS='|' read -r name desc script selected <<< "$item"
         display_key="$name - $desc"
         display_options+=("$display_key")
