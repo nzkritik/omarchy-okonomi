@@ -108,12 +108,12 @@ select_cuda_version() {
 
 # Function to check and install Python 3.10
 check_python_310() {
-    gum style --foreground 212 --bold "Step 1/10: Check Python 3.10"
+    gum style --foreground 212 --bold "Step 1/11: Check Python 3.10"
     gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     if ! command -v python3.10 &>/dev/null; then
         gum style "Python 3.10 not found. Installing..."
-        if ! run_install_step "Installing Python 3.10" "sudo pacman -S --noconfirm --needed python310"; then
+        if ! run_install_step "Installing Python 3.10" "yay -S --noconfirm --needed python310"; then
             exit 1
         fi
     else
@@ -164,7 +164,7 @@ select_cuda_version
 check_python_310
 
 # Step 2: Clone repositories
-gum style --foreground 212 --bold "Step 2/10: Clone Repositories"
+gum style --foreground 212 --bold "Step 2/11: Clone Repositories"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [[ -d "$INSTALL_DIR" ]]; then
@@ -187,7 +187,7 @@ fi
 echo ""
 
 # Step 3: Clone sd-scripts into fluxgym
-gum style --foreground 212 --bold "Step 3/10: Clone sd-scripts Repository"
+gum style --foreground 212 --bold "Step 3/11: Clone sd-scripts Repository"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [[ -d "$INSTALL_DIR/sd-scripts" ]]; then
@@ -201,7 +201,7 @@ fi
 echo ""
 
 # Step 4: Create virtual environment with Python 3.10
-gum style --foreground 212 --bold "Step 4/10: Create Virtual Environment"
+gum style --foreground 212 --bold "Step 4/11: Create Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 cd "$INSTALL_DIR"
@@ -216,7 +216,7 @@ fi
 echo ""
 
 # Step 5: Activate virtual environment
-gum style --foreground 212 --bold "Step 5/10: Activate Virtual Environment"
+gum style --foreground 212 --bold "Step 5/11: Activate Virtual Environment"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 gum style --foreground 212 "→ Activating virtual environment..."
@@ -236,8 +236,22 @@ else
 fi
 echo ""
 
-# Step 6: Upgrade pip
-gum style --foreground 212 --bold "Step 6/10: Upgrade pip"
+# Step 6: Create temporary directory
+gum style --foreground 212 --bold "Step 6/11: Setup Temporary Directory"
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [[ ! -d "$INSTALL_DIR/env/tmp"]]; then
+    mkdir -p "$INSTALL_DIR/env/tmp"
+    gum style --foreground 40 "✓ Temporary directory created"
+else
+    gum style --foreground 244 "⚠ Temporary directory already exists"
+fi
+export TMPDIR="$INSTALL_DIR/env/tmp"
+gum style --foreground 40 "✓ TMPDIR set to: $TMPDIR"
+echo ""
+
+# Step 7: Upgrade pip
+gum style --foreground 212 --bold "Step 7/11: Upgrade pip"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if ! run_install_step "Upgrading pip" "python -m pip install --upgrade pip"; then
@@ -245,8 +259,8 @@ if ! run_install_step "Upgrading pip" "python -m pip install --upgrade pip"; the
 fi
 echo ""
 
-# Step 7: Install sd-scripts dependencies
-gum style --foreground 212 --bold "Step 7/10: Install sd-scripts Dependencies"
+# Step 8: Install sd-scripts dependencies
+gum style --foreground 212 --bold "Step 8/11: Install sd-scripts Dependencies"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if ! run_install_step "Installing sd-scripts requirements" \
@@ -255,8 +269,8 @@ if ! run_install_step "Installing sd-scripts requirements" \
 fi
 echo ""
 
-# Step 8: Install FluxGym dependencies
-gum style --foreground 212 --bold "Step 8/10: Install FluxGym Dependencies"
+# Step 9: Install FluxGym dependencies
+gum style --foreground 212 --bold "Step 9/11: Install FluxGym Dependencies"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if ! run_install_step "Installing FluxGym requirements" \
@@ -265,8 +279,8 @@ if ! run_install_step "Installing FluxGym requirements" \
 fi
 echo ""
 
-# Step 9: Install PyTorch with selected CUDA version
-gum style --foreground 212 --bold "Step 9/10: Install PyTorch"
+# Step 10: Install PyTorch with selected CUDA version
+gum style --foreground 212 --bold "Step 10/11: Install PyTorch"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Convert CUDA version to wheel index format (e.g., 12.1 -> cu121)
@@ -278,9 +292,9 @@ if ! run_install_step "Installing PyTorch with CUDA $CUDA_VERSION" \
 fi
 echo ""
 
-# Step 10: Install/Update bitsandbytes if CUDA 12.8 (for RTX 50-series)
+# Step 11: Install/Update bitsandbytes if CUDA 12.8 (for RTX 50-series)
 if [[ "$CUDA_VERSION" == "12.8" ]]; then
-    gum style --foreground 212 --bold "Step 10/10: Update bitsandbytes for RTX 50-series"
+    gum style --foreground 212 --bold "Step 11/11: Update bitsandbytes for RTX 50-series"
     gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     if ! run_install_step "Updating bitsandbytes" \
