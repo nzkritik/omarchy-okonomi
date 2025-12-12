@@ -240,7 +240,7 @@ echo ""
 gum style --foreground 212 --bold "Step 6/11: Setup Temporary Directory"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-if [[ ! -d "$INSTALL_DIR/env/tmp"]]; then
+if [[ ! -d "$INSTALL_DIR/env/tmp" ]]; then
     mkdir -p "$INSTALL_DIR/env/tmp"
     gum style --foreground 40 "✓ Temporary directory created"
 else
