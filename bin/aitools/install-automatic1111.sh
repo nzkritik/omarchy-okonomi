@@ -9,8 +9,9 @@ fi
 gum style --foreground 212 "Step 1: Checking Python 3.10..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if ! command -v python3.10 &> /dev/null; then
-    echo "Python 3.10 not found. Installing..."
-    gum spin --spinner dot --title "Installing Python 3.10..." -- yay -S --noconfirm python310
+    gum style "Python 3.10 not found. Installing...(this may take a while)"
+    yay -S --noconfirm --needed python310
+    python3.10 --version
 fi
 
 # Step 2: Prompt for install path (default: ~/stable-diffusion-webui)
