@@ -83,7 +83,7 @@ fi
 gum spin --show-output --spinner dot --title "Installing PyTorch..." -- pip install torch torchvision torchaudio --index-url "$PIP_TORCH_URL"
 gum style --foreground 40 "✓ PyTorch installed with CUDA $CUDA_VERSION support"
 STARTVENV="source $INSTALL_DIR/venv310/bin/activate"
-STARTAPP="python $INSTALL_DIR/stable-diffusion-webui/webui.py"
+STARTAPP="$INSTALL_DIR/stable-diffusion-webui/webui.sh"
 
 # Step 11: setup launcher
 gum style --foreground 212 "Step 11: Setting up launcher..."
@@ -100,7 +100,18 @@ if ! command -v gum &> /dev/null; then
 fi
 gum style --foreground 212 --bold "Launching Automatic1111 Stable Diffusion WebUI..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+# Step 1: Activate virtual environment
 ${STARTVENV}
+# Steep 2: prompt to update the system or start the app
+gum style --foreground 212 "→ Do you want to update Automatic1111 before launching?"
+if gum confirm --default "true" "Update Automatic1111 now?"; then
+    gum style --foreground 212 "→ Updating Automatic1111..."
+    git -C "$INSTALL_DIR/stable-diffusion-webui" pull
+    gum style --foreground 40 "✓ Automatic1111 updated"
+else
+    gum style --foreground 244 "→ Skipping update..."
+fi
+# Step 3: Start the webui
 gum style --foreground 212 "→ Starting WebUI..."
 ${STARTAPP}
 EOF
