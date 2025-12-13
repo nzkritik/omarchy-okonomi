@@ -19,8 +19,8 @@ show_ai_tool_menu() {
         "Ollama|Local LLMs on your machine - CPU/GPU Required|./bin/aitools/install-ollama.sh|false" #tested
         "LM Studio|Local LLMs on your machine - CPU/GPU Required|./bin/aitools/install-lm-studio.sh|false" #tested
         "Open WebUI|Run LLMs with a web interface - CPU/GPU Required|./bin/aitools/install-open-webui.sh|false" #tested
-        #"Automatic1111|Stable Diffusion Web Interface - GPU Required|./bin/aitools/install-automatic1111.sh|false" #tested
-        "ComfyUI|Stable Diffusion Web Interface - GPU Required|./bin/aitools/install-comfyui.sh|false"
+        "Automatic1111|Stable Diffusion Web Interface - GPU Required|./bin/aitools/install-automatic1111.sh|false" #tested
+        "ComfyUI|Stable Diffusion Web Interface - GPU Required|./bin/aitools/install-comfyui.sh|false" #tested
         "FluxGym|LoRA training UI - Nvidia GPU Recommended|./bin/aitools/install-fluxgym.sh|false" #tested
         "AI Toolkit| All in one training suite for diffusion models|./bin/aitools/install-ai-toolkit.sh|true" #tested
         "Clara Verse|AI Image Generation Tool - GPU Required|./bin/aitools/install-clara-verse.sh|false" #tested
