@@ -83,7 +83,7 @@ fi
 gum spin --show-output --spinner dot --title "Installing PyTorch..." -- pip install torch torchvision torchaudio --index-url "$PIP_TORCH_URL"
 gum style --foreground 40 "✓ PyTorch installed with CUDA $CUDA_VERSION support"
 STARTVENV="source $INSTALL_DIR/venv310/bin/activate"
-STARTAPP="python $INSTALL_DIR/stable-diffusion-webui/webui.py --cuda $CUDA_VERSION"
+STARTAPP="python $INSTALL_DIR/stable-diffusion-webui/webui.py"
 
 # Step 11: setup launcher
 gum style --foreground 212 "Step 11: Setting up launcher..."
@@ -100,9 +100,9 @@ if ! command -v gum &> /dev/null; then
 fi
 gum style --foreground 212 --bold "Launching Automatic1111 Stable Diffusion WebUI..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-source "$INSTALL_DIR/venv310/bin/activate"
-gum style --foreground 212 "→ Starting WebUI with CUDA $CUDA_VERSION..."
-python "$INSTALL_DIR/stable-diffusion-webui/webui.py" --cuda $CUDA_VERSION
+${STARTVENV}
+gum style --foreground 212 "→ Starting WebUI..."
+${STARTAPP}
 EOF
 chmod +x "$LAUNCH_SCRIPT"
 gum style --foreground 40 "✓ Launch script created at $LAUNCH_SCRIPT"
