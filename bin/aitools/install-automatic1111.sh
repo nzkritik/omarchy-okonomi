@@ -128,7 +128,7 @@ fi
 cat > "$DESKTOP_FILE" <<EOF
 [Desktop Entry]
 Version=1.0
-Name=Stable Diffusion WebUI
+Name=Automatic1111 Stable Diffusion WebUI
 Comment=Automatic1111 Stable Diffusion WebUI
 Exec=$EXEC_CMD
 Terminal=true
