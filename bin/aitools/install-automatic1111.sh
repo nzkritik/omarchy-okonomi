@@ -31,13 +31,13 @@ gum style --foreground 40 "✓ Install path set to: $INSTALL_DIR"
 gum style --foreground 212 "Step 3: Creating virtual environment..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 python3.10 -m venv "$INSTALL_DIR/venv310"
-python3.10 -m pip install --upgrade pip setuptools wheel
 gum style --foreground 40 "✓ Virtual environment created at $INSTALL_DIR/venv310"
 
 # Step 4: Activate venv
 gum style --foreground 212 "Step 4: Activating virtual environment..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 source "$INSTALL_DIR/venv310/bin/activate"
+python3.10 -m pip install --upgrade pip setuptools wheel
 gum style --foreground 40 "✓ Virtual environment activated"
 
 # Step 5: Set TMPDIR
