@@ -82,19 +82,33 @@ else
 fi
 gum spin --show-output --spinner dot --title "Installing PyTorch..." -- pip install torch torchvision torchaudio --index-url "$PIP_TORCH_URL"
 gum style --foreground 40 "✓ PyTorch installed with CUDA $CUDA_VERSION support"
+STARTVENV="source $INSTALL_DIR/venv310/bin/activate"
+STARTAPP="python $INSTALL_DIR/stable-diffusion-webui/webui.py --cuda $CUDA_VERSION"
 
-# Step 11: Final instructions
-gum style --foreground 212 "Step 11: Finalizing installation..."
+# Step 11: setup launcher
+gum style --foreground 212 "Step 11: Setting up launcher..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-cd "$ORIGINAL_DIR"
-gum style --foreground 10 "Installation complete. To run, activate venv and launch webui.py."
-gum style --foreground 10 "Commands:"
-gum style --foreground 10 "  source $INSTALL_DIR/venv310/bin/activate"
-gum style --foreground 10 "  python $INSTALL_DIR/stable-diffusion-webui/webui.py --cuda $CUDA_VERSION"
+# Create launch script
+LAUNCH_SCRIPT="$INSTALL_DIR/launch-automatic1111.sh"
+cat > "$LAUNCH_SCRIPT" <<EOF
+#!/bin/bash
+# Launch script for Automatic1111 Stable Diffusion WebUI
+# Activate virtual environment and start webui
+# Install gum if not present
+if ! command -v gum &> /dev/null; then
+    yay -S --noconfirm gum
+fi
+gum style --foreground 212 --bold "Launching Automatic1111 Stable Diffusion WebUI..."
+gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+source "$INSTALL_DIR/venv310/bin/activate"
+gum style --foreground 212 "→ Starting WebUI with CUDA $CUDA_VERSION..."
+python "$INSTALL_DIR/stable-diffusion-webui/webui.py" --cuda $CUDA_VERSION
+EOF
+chmod +x "$LAUNCH_SCRIPT"
+gum style --foreground 40 "✓ Launch script created at $LAUNCH_SCRIPT"
 
 # Step 12: Create desktop integration
 
-LAUNCH_SCRIPT="$INSTALL_DIR/stable-diffusion-webui/webui.sh"
 DESKTOP_FILE="$HOME/.local/share/applications/sd-webui.desktop"
 ICON_PATH="$HOME/.local/share/icons/sd-webui.png"
 
@@ -105,10 +119,10 @@ gum style --foreground 242 "━━━━━━━━━━━━━━━━━�
 if [[ -f "$LAUNCH_SCRIPT" ]]; then
     chmod +x "$LAUNCH_SCRIPT"
     gum style --foreground 40 "✓ Launch script installed"
-    EXEC_CMD="$LAUNCH_SCRIPT --cuda $CUDA_VERSION"
+    EXEC_CMD="$LAUNCH_SCRIPT"
 else
     gum style --foreground 244 "⚠ Launch script not found in repo"
-    EXEC_CMD="bash -c 'source $INSTALL_DIR/venv310/bin/activate && python -m $INSTALL_DIR/stable-diffusion-webui/webui.py --cuda $CUDA_VERSION'"
+    EXEC_CMD="$STARTVENV && $STARTAPP"
 fi
 
 # Create directories for desktop integration
