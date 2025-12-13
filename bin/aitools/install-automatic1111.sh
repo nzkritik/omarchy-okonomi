@@ -105,10 +105,10 @@ gum style --foreground 242 "━━━━━━━━━━━━━━━━━�
 if [[ -f "$LAUNCH_SCRIPT" ]]; then
     chmod +x "$LAUNCH_SCRIPT"
     gum style --foreground 40 "✓ Launch script installed"
-    EXEC_CMD="$LAUNCH_SCRIPT"
+    EXEC_CMD="$LAUNCH_SCRIPT --cuda $CUDA_VERSION"
 else
     gum style --foreground 244 "⚠ Launch script not found in repo"
-    EXEC_CMD="bash -c 'cd $INSTALL_DIR/stable-diffusion-webui && source $INSTALL_DIR/venv310/bin/activate && python webui.py'"
+    EXEC_CMD="bash -c 'source $INSTALL_DIR/venv310/bin/activate && python -m $INSTALL_DIR/stable-diffusion-webui/webui.py --cuda $CUDA_VERSION'"
 fi
 
 # Create directories for desktop integration
@@ -128,7 +128,7 @@ fi
 cat > "$DESKTOP_FILE" <<EOF
 [Desktop Entry]
 Version=1.0
-Name=Automatic1111 Stable Diffusion WebUI
+Name=Automatic1111
 Comment=Automatic1111 Stable Diffusion WebUI
 Exec=$EXEC_CMD
 Terminal=true
