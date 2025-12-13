@@ -5,7 +5,7 @@ INSTALL_DIR="$HOME/stable-diffusion-webui"
 
 # Install gum if not present
 if ! command -v gum &> /dev/null; then
-    gum spin --show-output --spinner dot --title "Installing gum..." -- yay -S --noconfirm gum
+    yay -S --noconfirm gum
 fi
 
 # Step 1: Check Python 3.10
@@ -74,11 +74,11 @@ gum style --foreground 40 "✓ Requirements installed"
 gum style --foreground 212 "Step 10: Installing PyTorch with CUDA $CUDA_VERSION..."
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [[ "$CUDA_VERSION" == "11.8" ]]; then
-    PIP_TORCH_URL="https://download.pytorch.org/whl/cu118
+    PIP_TORCH_URL="https://download.pytorch.org/whl/cu118"
 elif [[ "$CUDA_VERSION" == "12.1" ]]; then
-    PIP_TORCH_URL="https://download.pytorch.org/whl/cu121
+    PIP_TORCH_URL="https://download.pytorch.org/whl/cu121"
 else
-    PIP_TORCH_URL="https://download.pytorch.org/whl/cu128
+    PIP_TORCH_URL="https://download.pytorch.org/whl/cu126"
 fi
 gum spin --show-output --spinner dot --title "Installing PyTorch..." -- pip install torch torchvision torchaudio --index-url "$PIP_TORCH_URL"
 gum style --foreground 40 "✓ PyTorch installed with CUDA $CUDA_VERSION support"
@@ -93,37 +93,51 @@ gum style --foreground 10 "  source $INSTALL_DIR/venv310/bin/activate"
 gum style --foreground 10 "  python $INSTALL_DIR/stable-diffusion-webui/webui.py --cuda $CUDA_VERSION"
 
 # Step 12: Create desktop integration
-FINAL_STEP="Creating desktop integration"
-LAUNCH_SCRIPT_SRC="$INSTALL_DIR/stable-diffusion-webui/webui.sh"
-LAUNCH_SCRIPT_DEST="$HOME/.local/bin/sd-webui-launcher.sh"
+
+LAUNCH_SCRIPT="$INSTALL_DIR/stable-diffusion-webui/webui.sh"
 DESKTOP_FILE="$HOME/.local/share/applications/sd-webui.desktop"
 ICON_PATH="$HOME/.local/share/icons/sd-webui.png"
 
-gum style --foreground 212 --bold "Step 12/12: $FINAL_STEP"
+gum style --foreground 212 --bold "Step 12: Creating desktop integration"
 gum style --foreground 242 "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Copy launch script if available
-cd "$ORIGINAL_DIR"
-if [[ -f "$LAUNCH_SCRIPT_SRC" ]]; then
-    mkdir -p "$(dirname "$LAUNCH_SCRIPT_DEST")"
-    cp "$LAUNCH_SCRIPT_SRC" "$LAUNCH_SCRIPT_DEST"
-    chmod +x "$LAUNCH_SCRIPT_DEST"
+# set EXEC_CMD
+if [[ -f "$LAUNCH_SCRIPT" ]]; then
+    chmod +x "$LAUNCH_SCRIPT"
     gum style --foreground 40 "✓ Launch script installed"
-    EXEC_CMD="$LAUNCH_SCRIPT_DEST"
+    EXEC_CMD="$LAUNCH_SCRIPT"
 else
     gum style --foreground 244 "⚠ Launch script not found in repo"
     EXEC_CMD="bash -c 'cd $INSTALL_DIR/stable-diffusion-webui && source $INSTALL_DIR/venv310/bin/activate && python webui.py'"
 fi
-echo ""
 
 # Create directories for desktop integration
 mkdir -p "$(dirname "$DESKTOP_FILE")"
 mkdir -p "$(dirname "$ICON_PATH")"
 
 # Copy icon if available (assuming icon.png in repo root)
-if [[ -f "$INSTALL_DIR/stable-diffusion-webui/icon.png" ]]; then
-    cp "$INSTALL_DIR/stable-diffusion-webui/icon.png" "$ICON_PATH"
+if [[ -f "$ORIGINAL_DIR/assets/automatic1111.png" ]]; then
+    cp "$ORIGINAL_DIR/assets/automatic1111.png" "$ICON_PATH"
     gum style --foreground 40 "✓ Icon installed"
 else
     gum style --foreground 244 "⚠ Icon file not found in repo"
     ICON_PATH=""
+fi
+
+# Create desktop file
+cat > "$DESKTOP_FILE" <<EOF
+[Desktop Entry]
+Version=1.0
+Name=Stable Diffusion WebUI
+Comment=Automatic1111 Stable Diffusion WebUI
+Exec=$EXEC_CMD
+Terminal=true
+Type=Application
+Icon=$ICON_PATH
+StartupNotify=true
+Categories=Graphics;Development;
+EOF
+
+chmod +x "$DESKTOP_FILE"
+gum style --foreground 40 "✓ Desktop file created"
+echo ""
